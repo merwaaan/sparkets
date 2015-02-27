@@ -1,3 +1,0 @@
-#!/usr/bin/zsh
-
-node tools/watch.js src/**/*.coffee
