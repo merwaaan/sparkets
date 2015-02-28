@@ -1,6 +1,7 @@
 module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-coffee');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-vows');
@@ -9,8 +10,7 @@ module.exports = function(grunt) {
   var clientScripts = ['src/client/*.coffee', 'src/*.coffee'];
 
   grunt.initConfig({
-    
-    
+
 
     coffee: {
       options: {
@@ -30,6 +30,14 @@ module.exports = function(grunt) {
           verbose: true
         },
         src: ['test/*.coffee']
+      }
+    },
+
+    uglify: {
+      client: {
+        files: {
+          'build/client.min.js': 'build/client.js'
+        }
       }
     },
 
@@ -57,5 +65,7 @@ module.exports = function(grunt) {
   grunt.registerTask('both', ['server', 'client']);
 
   grunt.registerTask('test', ['vows:all']);
+
+  grunt.registerTask('release', ['both', 'uglify'])
 
 };
