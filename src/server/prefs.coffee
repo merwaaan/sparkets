@@ -1,4 +1,4 @@
-utils = require '../utils'
+utils = require './utils'
 BonusBoost = require './bonusBoost'
 BonusShield = require './bonusShield'
 BonusMine = require './bonusMine'

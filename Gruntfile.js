@@ -1,5 +1,6 @@
 module.exports = function(grunt) {
 
+  grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-coffee');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-clean');
@@ -11,16 +12,33 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
 
-
     coffee: {
       options: {
         join: true
       },
       server: {
-        files: {'build/server.js': serverScripts}
-      },
+        expand: true,
+        flatten: true,
+        src: serverScripts,
+        dest: 'build/server/',
+        ext: '.js'
+      }
+    },
+
+    browserify: {
       client: {
-        files: {'build/client.js': clientScripts}
+        options: {
+          transform: ['coffeeify'],
+          browserifyOptions: {
+            debug: true,
+            extensions: ['.coffee']
+          }
+        },
+        files : {
+          'build/client/client.js': clientScripts.concat('!src/client/index.coffee', '!src/client/create.coffee'),
+          'build/client/index.js': 'src/client/index.coffee',
+          'build/client/create.js': 'src/client/create.coffee'
+        }
       }
     },
 
@@ -48,11 +66,11 @@ module.exports = function(grunt) {
     watch: {
       server: {
         files: serverScripts,
-        tasks: ['coffee:server']
+        tasks: ['server']
       },
       client: {
         files: clientScripts,
-        tasks: ['coffee:client']
+        tasks: ['client']
       }
     }
 
@@ -61,11 +79,10 @@ module.exports = function(grunt) {
   grunt.registerTask('default', ['clean', 'both', 'watch']);
 
   grunt.registerTask('server', ['coffee:server']);
-  grunt.registerTask('client', ['coffee:client']);
+  grunt.registerTask('client', ['browserify:client']);
   grunt.registerTask('both', ['server', 'client']);
+  grunt.registerTask('release', ['both', 'uglify'])
 
   grunt.registerTask('test', ['vows:all']);
-
-  grunt.registerTask('release', ['both', 'uglify'])
 
 };

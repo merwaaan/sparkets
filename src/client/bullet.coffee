@@ -1,4 +1,5 @@
-boxedMixin = window.Boxed
+boxedMixin = require('./boxed')
+ExplosionEffect = require('./explosionEffect')
 
 class Bullet
 
@@ -104,5 +105,4 @@ class Bullet
 		@client.effects.push new ExplosionEffect(@client, pos, @color, 20, 4)
 
 
-# Exports
-window.Bullet = Bullet
+module.exports = Bullet

@@ -1,21 +1,21 @@
 $(document).ready () ->
 
 	# Server.
-	window.socket = null
+	socket = null
 
 	# Connect to server and set callbacks.
-	window.socket = io.connect()
+	socket = io.connect()
 
 	# Grab the game list every minute.
 	setInterval( (() =>
-		window.socket.emit('get game list')), 60 * 1000)
+		socket.emit('get game list')), 60 * 1000)
 
 	# Fetch the game list at first connection.
-	window.socket.on 'connect', () =>
-		window.socket.emit 'get game list'
+	socket.on 'connect', () =>
+		socket.emit 'get game list'
 
-	# Update list of running games.
-	window.socket.on 'game list', (data) =>
+	# Update list of active games.
+	socket.on 'game list', (data) =>
 		$('#gameList').empty()
 
 		minutesLeft = (start, duration) ->

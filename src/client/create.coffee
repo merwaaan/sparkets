@@ -1,10 +1,16 @@
+SpriteManager = require('./spriteManager')
+Tooltip = require('./tooltip')
+Range = require('./range')
+SelectionBox = require('./selectionBox')
+BonusBox = require('./bonusBox')
+
 $(document).ready () ->
 
 	window.spriteManager = new SpriteManager()
 
-	window.ranges = []
-	window.selectionBoxes = []
-	window.bonusBoxes = []
+	ranges = []
+	selectionBoxes = []
+	bonusBoxes = []
 
 	# Setup tabbed panels.
 	$('#form .tab').click (event) ->
@@ -28,7 +34,7 @@ $(document).ready () ->
 		$('#panel' + @.id.substr(@.id.length-1, 1)).show()
 
 	#
-	window.presets =
+	presets =
 		mapSize:
 			'tiny': 1000
 			'small': 1500
@@ -72,12 +78,12 @@ $(document).ready () ->
 
 	# Second panel: map.
 
-	window.selectionBoxes.push new SelectionBox(entry('#panel2 > table', 'Map size'),
-		'mapSize', Object.keys(window.presets['mapSize']), 2)
+	selectionBoxes.push new SelectionBox(entry('#panel2 > table', 'Map size'),
+		'mapSize', Object.keys(presets['mapSize']), 2)
 	new Tooltip(label(2, 1), 'blabla')
 
-	window.selectionBoxes.push new SelectionBox(entry('#panel2 > table', 'Planet density'),
-		'planet.density', Object.keys(window.presets['planet.density']), 1)
+	selectionBoxes.push new SelectionBox(entry('#panel2 > table', 'Planet density'),
+		'planet.density', Object.keys(presets['planet.density']), 1)
 	new Tooltip(label(2, 2), 'blabla')
 
 	# Third panel: bonus.
@@ -88,25 +94,25 @@ $(document).ready () ->
 	bonus = (n) ->
 		cell.find('.bonusBox:nth-of-type(' + n + ')')
 
-	window.bonusBoxes.push new BonusBox(cell, 'bonus.bonusType.mine.weight', 'bonusMine')
+	bonusBoxes.push new BonusBox(cell, 'bonus.bonusType.mine.weight', 'bonusMine')
 	new Tooltip(bonus(1), 'Mine blablablaaa')
 
-	window.bonusBoxes.push new BonusBox(cell, 'bonus.bonusType.tracker.weight', 'bonusTracker')
+	bonusBoxes.push new BonusBox(cell, 'bonus.bonusType.tracker.weight', 'bonusTracker')
 	new Tooltip(bonus(2), 'Tracker blablablaaa')
 
-	window.bonusBoxes.push new BonusBox(cell, 'bonus.bonusType.boost.weight', 'bonusBoost')
+	bonusBoxes.push new BonusBox(cell, 'bonus.bonusType.boost.weight', 'bonusBoost')
 	new Tooltip(bonus(3), 'Boost blablablaaa')
 
-	window.bonusBoxes.push new BonusBox(cell, 'bonus.bonusType.shield.weight', 'bonusShield')
+	bonusBoxes.push new BonusBox(cell, 'bonus.bonusType.shield.weight', 'bonusShield')
 	new Tooltip(bonus(4), 'Shield blablablaaa')
 
-	window.bonusBoxes.push new BonusBox(cell, 'bonus.bonusType.EMP.weight', 'bonusEMP')
+	bonusBoxes.push new BonusBox(cell, 'bonus.bonusType.EMP.weight', 'bonusEMP')
 	new Tooltip(bonus(5), 'EMP blablablaaa')
 
-	window.bonusBoxes.push new BonusBox(cell, 'bonus.bonusType.stealth.weight', 'bonusStealth')
+	bonusBoxes.push new BonusBox(cell, 'bonus.bonusType.stealth.weight', 'bonusStealth')
 	new Tooltip(bonus(6), 'Stealth blablablaaa')
 
-	window.bonusBoxes.push new BonusBox(cell, 'bonus.bonusType.grenade.weight', 'bonusGrenade')
+	bonusBoxes.push new BonusBox(cell, 'bonus.bonusType.grenade.weight', 'bonusGrenade')
 	new Tooltip(bonus(7), 'Grenade blablablaaa')
 
 	new Range(entry('#panel3 > table', 'Drop wait'),
@@ -140,28 +146,28 @@ $(document).ready () ->
 	new Tooltip(label(4, 3), 'blabla')
 
 	# Connect to server and setup callbacks.
-	window.socket = io.connect()
+	socket = io.connect()
 
-	window.socket.on 'connect', () ->
+	socket.on 'connect', () ->
 		# Do something?
 
-	window.socket.on 'game already exists', () ->
+	socket.on 'game already exists', () ->
 		$('#error').html('Name already exists')
 
-	window.socket.on 'game created', (data) ->
+	socket.on 'game created', (data) ->
 		# Redirect to the client page.
 		window.location.replace('../play/#' + data.id)
 
-	window.socket.on 'game list', (data) ->
+	socket.on 'game list', (data) ->
 		idList = Object.keys(data)
 		if idList.length > 0
-			window.gameListRegexp = new RegExp('^(' + idList.join('|') + ')$')
+			gameListRegexp = new RegExp('^(' + idList.join('|') + ')$')
 		else
-			window.gameListRegexp = null
+			gameListRegexp = null
 
 	# Setup form handling.
 	$('input[type="text"]').keyup (event) =>
-		if window.gameListRegexp? and event.target.value.match(window.gameListRegexp)
+		if gameListRegexp? and event.target.value.match(gameListRegexp)
 			$('#error').html('Name already exists')
 			$('input[type="submit"]').attr('disabled', 'disabled')
 			console.info 'no'
@@ -180,7 +186,7 @@ $(document).ready () ->
 			prefs: data
 		delete data.id
 
-		window.socket.emit 'create game', opts, () ->
+		socket.emit 'create game', opts, () ->
 			# Clear and unfocus game name input on creation.
 			nameInput = $('#panel1 input[name="id"]')
 			nameInput.val('')
@@ -206,29 +212,29 @@ $(document).ready () ->
 						insert(prefs, input.name, parseFloat(input.value))
 
 		for sb in @selectionBoxes
-			insert(prefs, sb.name, window.presets[sb.name][sb.value()])
+			insert(prefs, sb.name, presets[sb.name][sb.value()])
 
 		for bb in @bonusBoxes
-			insert(prefs, bb.name, window.presets['bonus weight'][bb.state])
+			insert(prefs, bb.name, presets['bonus weight'][bb.state])
 
 		return prefs
 
 	# Setup log in and sign up forms.
 	$('#login, #signup').click (event) =>
-		return if window.accountForm?
+		return if accountForm?
 
 		# Popup the forms.
 		new AccountForm()
 
 		# Focus on the appropriate field.
 		if event.target.id is 'login'
-			window.accountForm.formLogin.find('input[name="username"]').focus()
+			accountForm.formLogin.find('input[name="username"]').focus()
 		else
-			window.accountForm.formSignup.find('input[name="username"]').focus()
+			accountForm.formSignup.find('input[name="username"]').focus()
 
 	# Make page content unselectable to prevent inopportune selection
 	# when repidly clicking on bonuses.
 	document.body.onselectstart = () -> false
 
 	# Request game list.
-	window.socket.emit 'get game list'
+	socket.emit 'get game list'

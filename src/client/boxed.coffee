@@ -37,4 +37,4 @@ mixin = () ->
 
 	return @
 
-window.Boxed = mixin
+module.exports = mixin

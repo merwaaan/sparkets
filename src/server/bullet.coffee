@@ -1,5 +1,5 @@
 ChangingObject = require('./changingObject').ChangingObject
-utils = require('../utils')
+utils = require('./utils')
 
 class Bullet extends ChangingObject
 	constructor: (@id, @game, @owner) ->

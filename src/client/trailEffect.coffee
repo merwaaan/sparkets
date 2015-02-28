@@ -46,5 +46,4 @@ class TrailEffect
 
 		true
 
-# Exports
-window.TrailEffect = TrailEffect
+module.exports = TrailEffect

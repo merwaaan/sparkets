@@ -1,4 +1,7 @@
-boxedMixin = window.Boxed
+boxedMixin = require('./boxed')
+ExplosionEffect = require('./explosionEffect')
+FlashEffect = require('./flashEffect')
+DislocateEffect = require('./dislocateEffect')
 
 class Ship
 
@@ -31,7 +34,7 @@ class Ship
 	initSprite: () ->
 		w = 20+5 # +5 to make way for the line width and the line rounding.
 		h = 14+5
-		color = window.utils.color @color
+		color = utils.color @color
 		@sprite = @client.spriteManager.get('ship', w, h, color)
 
 	update: () ->
@@ -207,5 +210,4 @@ class Ship
 		staticPos = {x: @pos.x, y: @pos.y}
 		@client.effects.push new FlashEffect(@client, staticPos, 300, @color, 600)
 
-# Exports
-window.Ship = Ship
+module.exports = Ship

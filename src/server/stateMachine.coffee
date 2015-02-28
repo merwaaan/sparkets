@@ -1,4 +1,4 @@
-logger = require('../logger').static
+logger = require('./logger').static
 
 warn = (msg) -> logger.warn msg
 

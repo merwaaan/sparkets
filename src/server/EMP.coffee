@@ -1,6 +1,6 @@
 ChangingObject = require('./changingObject').ChangingObject
 stateMachineMixin = require('./stateMachine').mixin
-utils = require '../utils'
+utils = require './utils'
 
 class EMP extends ChangingObject
 

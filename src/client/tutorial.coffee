@@ -26,7 +26,7 @@ class Tutorial
 			$('#slide' + @current).fadeIn(@fadeDuration, () => @pause())
 		# Mark the tutorial as passed.
 		else
-			window.localStorage['sparkets.tutorial'] = true
+			localStorage['sparkets.tutorial'] = true
 
 
 	pause: () ->
@@ -37,5 +37,4 @@ class Tutorial
 		$('#slide' + @current).fadeOut(@fadeDuration, () => @fadeIn())
 		++@current
 
-# Exports
-window.Tutorial = Tutorial
+module.exports = Tutorial

@@ -1,4 +1,5 @@
-boxedMixin = window.Boxed
+boxedMixin = require('./boxed')
+FlashEffect = require('./flashEffect')
 
 class Tracker
 
@@ -12,7 +13,7 @@ class Tracker
 		# Create the sprite.
 		@radius = 5
 		s = 2*@radius + 7
-		color = window.utils.color @color
+		color = utils.color @color
 		@sprite = @client.spriteManager.get('tracker', s, s, color)
 
 	serverUpdate: (tracker) ->
@@ -42,5 +43,4 @@ class Tracker
 	boostEffect: () ->
 		@client.effects.push new BoostEffect(@client, @, 3, 600)
 
-# Exports
-window.Tracker = Tracker
+module.exports = Tracker

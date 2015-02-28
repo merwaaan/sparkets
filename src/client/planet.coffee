@@ -1,4 +1,4 @@
-boxedMixin = window.Boxed
+boxedMixin = require './boxed'
 
 class Planet
 
@@ -9,7 +9,7 @@ class Planet
 
 		# Create the sprite.
 		s = 2 * @force
-		color = window.utils.color @color
+		color = utils.color @color
 		@sprite = @client.spriteManager.get('planet', s, s, color)
 
 	serverUpdate: (planet) ->
@@ -30,5 +30,4 @@ class Planet
 		ctxt.restore()
 
 
-# Exports
-window.Planet = Planet
+module.exports = Planet

@@ -1,4 +1,4 @@
-utils = require('../utils')
+utils = require('./utils')
 Player = require('./player').Player
 
 class Bot extends Player

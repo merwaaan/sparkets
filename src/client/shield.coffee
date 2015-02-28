@@ -1,4 +1,4 @@
-boxedMixin = window.Boxed
+boxedMixin = require './boxed'
 
 class Shield
 
@@ -47,5 +47,4 @@ class Shield
 		ctxt.drawImage(@sprite, -@sprite.width/2, -@sprite.height/2)
 		ctxt.restore()
 
-# Exports
-window.Shield = Shield
+module.exports = Shield

@@ -1,3 +1,5 @@
+spriteManager = require './spriteManager'
+
 class BonusBox
 
 	states:
@@ -17,7 +19,7 @@ class BonusBox
 	bonusSize: 60
 
 	constructor: (@container, @name, @type, @state = 'regular') ->
-		
+
 		# Build HTML elements.
 		@box = $('<div class="bonusBox"></div>').appendTo(@container)
 
@@ -71,5 +73,4 @@ class BonusBox
 		# Change label.
 		@label.html(@state)
 
-# Exports
-window.BonusBox = BonusBox
+module.exports = BonusBox

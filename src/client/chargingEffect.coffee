@@ -57,5 +57,4 @@ class ChargingEffect
 
 			ctxt.restore()
 
-# Exports
-window.ChargingEffect = ChargingEffect
+module.exports = ChargingEffect

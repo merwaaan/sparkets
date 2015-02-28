@@ -1,3 +1,5 @@
+utils = require('../utils')
+
 class Range
 	constructor: (@container, @name, @min, @max, @step, @default, @suffix = '') ->
 
@@ -23,5 +25,4 @@ class Range
 	update: () ->
 		@range.find('+ span').html(utils.prettyNumber(@value()) + @suffix)
 
-# Exports
-window.Range = Range
+module.exports = Range

@@ -10,11 +10,10 @@ class Tooltip
 			return if not @tooltip?
 
 			@tooltip.css('left', event.pageX)
-			@tooltip.css('top', @target.offset().top + @target.height() + 10)	
+			@tooltip.css('top', @target.offset().top + @target.height() + 10)
 
 		@target.mouseout (event) =>
 			@tooltip.remove()
 			@tooltip = null
 
-# Exports
-window.Tooltip = Tooltip
+module.exports = Tooltip

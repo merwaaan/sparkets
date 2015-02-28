@@ -30,5 +30,4 @@ class DislocateEffect
 
 		true
 
-# Exports
-window.DislocateEffect = DislocateEffect
+module.exports = DislocateEffect

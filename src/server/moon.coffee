@@ -1,5 +1,5 @@
 Planet = require('./planet').Planet
-utils = require '../utils'
+utils = require './utils'
 
 class Moon extends Planet
 	constructor: (@game, @planet, force, gap) ->

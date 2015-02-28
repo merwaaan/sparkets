@@ -1,4 +1,5 @@
-boxedMixin = window.Boxed
+boxedMixin = require './boxed'
+FlashEffect = require('./flashEffect')
 
 class Mine
 
@@ -11,7 +12,7 @@ class Mine
 
 		# Create the sprite.
 		s = 10*Math.sqrt(2) # The size of the sprite equals the diagonal of the squares forming the sprite.
-		color = window.utils.color @color
+		color = utils.color @color
 		@sprite = @client.spriteManager.get('mine', s, s, color)
 
 	serverUpdate: (mine) ->
@@ -47,5 +48,4 @@ class Mine
 	explosionEffect: () ->
 		@client.effects.push new FlashEffect(@client, @pos, 80, @color, 500)
 
-# Exports
-window.Mine = Mine
+module.exports = Mine

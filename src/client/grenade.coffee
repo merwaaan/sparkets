@@ -1,4 +1,5 @@
-boxedMixin = window.Boxed
+boxedMixin = require('./boxed')
+FlashEffect = require('./flashEffect')
 
 class Grenade
 
@@ -11,7 +12,7 @@ class Grenade
 
 		# Create the sprite.
 		r = @client.serverPrefs.grenade.radius
-		color = window.utils.color @color
+		color = utils.color @color
 		@sprite = @client.spriteManager.get('grenade', r, r, color)
 
 	serverUpdate: (grenade) ->
@@ -34,5 +35,4 @@ class Grenade
 	explosionEffect: () ->
 		@client.effects.push new FlashEffect(@client, @pos, 20, @color, 500)
 
-# Exports
-window.Grenade = Grenade
+module.exports = Grenade

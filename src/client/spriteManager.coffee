@@ -320,5 +320,4 @@ class SpriteManager
 
 			return sprite
 
-# Exports
-window.SpriteManager = SpriteManager
+module.exports = SpriteManager

@@ -1,5 +1,5 @@
 ChangingObject = require('./changingObject').ChangingObject
-utils = require('../utils')
+utils = require('./utils')
 
 class Shield extends ChangingObject
 	constructor: (@id, @game, @owner) ->

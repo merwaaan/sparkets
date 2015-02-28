@@ -1,3 +1,19 @@
+Bonus = require('./bonus')
+Bullet = require('./bullet')
+Chat = require('./chat')
+DislocateEffect = require('./dislocateEffect')
+EMP = require('./EMP')
+ExplosionEffect = require('./explosionEffect')
+Grenade = require('./grenade')
+Menu = require('./menu')
+Mine = require('./mine')
+Planet = require('./planet')
+Rope = require('./rope')
+Shield = require('./shield')
+Ship = require('./ship')
+SpriteManager = require('./spriteManager')
+Tracker = require('./tracker')
+
 class Client
 	constructor: () ->
 
@@ -45,13 +61,13 @@ class Client
 
 		# Connect to server and set callbacks.
 		@socket = io.connect()
-		@socket = @socket.socket.of(window.location.hash.substring(1))
+		@socket = @socket.socket.of(location.hash.substring(1))
 
 		# Setup a connexion timeout to redirect to homepage in case of
 		# nonexistent games.
 		@connectionTimeout = setTimeout( ( () ->
-			url = 'http://' + window.location.hostname + ':' + window.location.port
-			window.location.replace(url)), 1500)
+			url = 'http://' + location.hostname + ':' + location.port
+			location.replace(url)), 1500)
 
 		# Bind socket events.
 		@socket.on 'connect', () =>
@@ -85,8 +101,8 @@ class Client
 		# surrounding the canvas first, then the canvas will shrink
 		# while keeping its aspect ratio.
 		$(window).resize (event) =>
-			canvasWidth = Math.min(window.innerWidth, 960)
-			canvasHeight = Math.min(window.innerHeight, 600)
+			canvasWidth = Math.min(innerWidth, 960)
+			canvasHeight = Math.min(innerHeight, 600)
 
 			# Keep aspect ratio
 			ratio = canvasWidth / canvasHeight
@@ -101,13 +117,13 @@ class Client
 			@canvasSize.h = document.getElementById('canvas').height = canvasHeight
 
 			# Center canvas horizontally if there is enough space
-			horizSpace = Math.max(window.innerWidth - canvasWidth, 0)
+			horizSpace = Math.max(innerWidth - canvasWidth, 0)
 			$('#canvas').css
 				'margin-left': horizSpace/2
 				'margin-right': horizSpace/2
 
 			# Add top margin if there is enough space
-			vertSpace = Math.max(window.innerHeight - canvasHeight, 0)
+			vertSpace = Math.max(innerHeight - canvasHeight, 0)
 			$('#canvas').css('margin-top': vertSpace/3)
 
 		# Manually trigger a resize event to set everything in place
@@ -151,9 +167,9 @@ class Client
 	go: () ->
 
 		# Show the menu the first time.
-		if not window.localStorage['sparkets.tutorial']?
+		if not localStorage['sparkets.tutorial']?
 			@menu.open()
-			window.localStorage['sparkets.tutorial'] = true
+			localStorage['sparkets.tutorial'] = true
 
 		# Use the game event handler.
 		@setInputHandlers()
@@ -185,11 +201,11 @@ class Client
 		# RequestAnimationFrame API
 		# http://paulirish.com/2011/requestanimationframe-for-smart-animating/
 		requestAnimFrame = ( () =>
-			window.requestAnimationFrame       or
-			window.webkitRequestAnimationFrame or
-			window.mozRequestAnimationFrame    or
-			window.oRequestAnimationFrame      or
-			window.msRequestAnimationFrame     or
+			requestAnimationFrame       or
+			webkitRequestAnimationFrame or
+			mozRequestAnimationFrame    or
+			oRequestAnimationFrame      or
+			msRequestAnimationFrame     or
 			(callback, element) -> setTimeout(callback, 1000 / 60) )()
 
 		currentFPS = 0
@@ -524,4 +540,4 @@ class Client
 
 # Entry point.
 $(document).ready () ->
-	window.client = new Client()
+	client = new Client()

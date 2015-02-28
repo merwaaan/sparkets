@@ -1,4 +1,4 @@
-boxedMixin = window.Boxed
+boxedMixin = require('./boxed')
 
 class EMP
 
@@ -57,5 +57,4 @@ class EMP
 					angle: a
 					offset: Math.random() * 10 - 5
 
-# Exports
-window.EMP = EMP
+module.exports = EMP

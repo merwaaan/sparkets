@@ -1,4 +1,4 @@
-utils = require '../utils'
+utils = require './utils'
 ChangingObject = require('./changingObject').ChangingObject
 
 class Rope extends ChangingObject

@@ -1,5 +1,5 @@
-utils = require '../utils'
-logger = require('../logger').static
+utils = require './utils'
+logger = require('./logger').static
 collisions = require('./collisions')
 Bot = require('./bot').Bot
 Bonus = require('./bonus').Bonus

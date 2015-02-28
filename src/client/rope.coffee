@@ -1,4 +1,5 @@
-boxedMixin = window.Boxed
+boxedMixin = require('./boxed')
+DislocateEffect = require('./dislocateEffect')
 
 class Rope
 
@@ -125,5 +126,4 @@ class Rope
 
 		@client.effects.push new DislocateEffect(@client, edges, @color, 1000)
 
-# Exports
-window.Rope = Rope
+module.exports = Rope

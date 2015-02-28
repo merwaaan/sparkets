@@ -19,5 +19,4 @@ class SelectionBox
 	value: () ->
 		@table.find('button.selected').val()
 
-# Exports
-window.SelectionBox = SelectionBox
+module.exports = SelectionBox

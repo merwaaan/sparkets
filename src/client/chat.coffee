@@ -65,5 +65,4 @@ class Chat
 			line.animate({opacity: 'hide', height: 'toggle'}, 300, () -> line.detach())),
 			@displayDuration)
 
-# Exports
-window.Chat = Chat
+module.exports = Chat

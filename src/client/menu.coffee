@@ -73,7 +73,7 @@ class Menu
 			@close()
 
 		$('#quitButton').click () =>
-			window.location = '/'
+			location = '/'
 			# XXX: let the server know, maybe...
 
 	toggle: () ->
@@ -117,17 +117,17 @@ class Menu
 
 	# Store user preferences in the browser local storage.
 	saveLocalPreferences: () ->
-		window.localStorage['sparkets.color'] = @currentColor if @currentColor?
-		window.localStorage['sparkets.name'] = @nameField.val() if @nameField.val().length > 0
+		localStorage['sparkets.color'] = @currentColor if @currentColor?
+		localStorage['sparkets.name'] = @nameField.val() if @nameField.val().length > 0
 
 		console.info 'Preferences saved.'
 
 	# Restores user preferences from browser local storage.
 	restoreLocalPreferences: () ->
-		if window.localStorage['sparkets.color']?
-			@currentColor = window.localStorage['sparkets.color'].split(',')
-		if window.localStorage['sparkets.name']
-			@nameField.val(window.localStorage['sparkets.name'])
+		if localStorage['sparkets.color']?
+			@currentColor = localStorage['sparkets.color'].split(',')
+		if localStorage['sparkets.name']
+			@nameField.val(localStorage['sparkets.name'])
 
 		console.info 'Preferences restored.'
 
@@ -149,7 +149,7 @@ class Menu
 		h += 2*Math.PI if h < 0
 		hDeg = Math.round(h * 180/Math.PI)
 
-		d = window.utils.distance(0, 0, dx, dy)
+		d = utils.distance(0, 0, dx, dy)
 
 		# Clamp distance to colorwheel disc.
 		d = Math.max(minRadius, Math.min(d, maxRadius))
@@ -220,5 +220,4 @@ class Menu
 
 		$('#timeLeft').html(timeLeft.getMinutes() + ':' + pad(timeLeft.getSeconds()))
 
-# Exports
-window.Menu = Menu
+module.exports = Menu

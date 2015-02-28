@@ -24,5 +24,4 @@ class FlashEffect
 		ctxt.arc(@pos.x, @pos.y, @radius, 0, 2*Math.PI, false)
 		ctxt.fill()
 
-# Exports
-window.FlashEffect = FlashEffect
+module.exports = FlashEffect

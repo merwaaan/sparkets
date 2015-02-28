@@ -67,5 +67,4 @@ class ExplosionEffect
 
 		true
 
-# Exports
-window.ExplosionEffect = ExplosionEffect
+module.exports = ExplosionEffect

@@ -1,4 +1,7 @@
-boxedMixin = window.Boxed
+boxedMixin = require('./boxed')
+ExplosionEffect = require('./explosionEffect')
+DislocateEffect = require('./dislocateEffect')
+utils = require('../utils')
 
 class Bonus
 
@@ -10,7 +13,7 @@ class Bonus
 		# Create the bonus sprite.
 		@radius = 10
 		s = 2*@radius
-		color = window.utils.color @color
+		color = utils.color @color
 		@sprite = @client.spriteManager.get('bonus', s, s, color)
 
 		# Create the logo sprite and paste it on the bonus sprite.
@@ -111,5 +114,4 @@ class Bonus
 				size: 20
 		@client.effects.push new DislocateEffect(@client, edges, @color, 1000)
 
-# Exports
-window.Bonus = Bonus
+module.exports = Bonus

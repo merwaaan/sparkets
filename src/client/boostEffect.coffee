@@ -45,5 +45,4 @@ class BoostEffect
 			ctxt.drawImage(@sprite, -@sprite.width/2, -@sprite.height/2)
 			ctxt.restore()
 
-# Exports
-window.BoostEffect = BoostEffect
+module.exports = BoostEffect
