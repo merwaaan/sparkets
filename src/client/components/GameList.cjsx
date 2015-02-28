@@ -7,11 +7,12 @@ GameList = React.createClass
 
 	render: ->
 
-		games = @state.games.map (game) =>
+		games = _.map @state.games, (game, name) =>
 			<Game
-				name={game.name}
+				name={name}
 				players={game.players}
-				timer={game.timer} />
+				started={game.startTime}
+				duration={game.duration * 60 * 1000} />
 
 		<table>
 			<thead>
@@ -39,32 +40,33 @@ GameList = React.createClass
 
 		# Update the list of active games
 		@socket.on 'game list', (data) =>
-
-			timeLeft = (start, duration) ->
-				new Date(duration - (Date.now() - start)).getSeconds()
-
-			games = _.map data, (game, name) ->
-				name: name
-				players: game.players
-				timer: timeLeft game.startTime, game.duration * 60 * 1000
-
-			@setState {games: games}
+			@setState {games: data}
 
 
 Game = React.createClass
 
 	getInitialState: ->
-		seconds: @props.timer
+		minutes: 0
+		seconds: 0
 
 	render: ->
 		<tr>
 			<td>{@props.name}</td>
 			<td>{@props.players}</td>
-			<td>{@state.seconds}</td>
+			<td>{@state.minutes}:{@state.seconds}</td>
 		</tr>
 
 	componentDidMount: ->
-		setInterval (() =>
-			if @state.seconds > 0 then @setState {seconds: @state.seconds - 1}), 1000
+		setInterval @computeTimeLeft, 1000
+
+	computeTimeLeft: (start, duration) ->
+		remaining = new Date(this.props.duration - (Date.now() - this.props.started))
+		@setState
+			minutes: @pad(remaining.getMinutes())
+			seconds: @pad(remaining.getSeconds())
+
+	pad: (time) ->
+		if time.toString().length is 1 then '0' + time else time
+
 
 module.exports = GameList
