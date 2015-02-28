@@ -40,24 +40,31 @@ GameList = React.createClass
 		# Update the list of active games
 		@socket.on 'game list', (data) =>
 
-			minutesLeft = (start, duration) ->
-				new Date(duration - (Date.now() - start)).getMinutes()
+			timeLeft = (start, duration) ->
+				new Date(duration - (Date.now() - start)).getSeconds()
 
 			games = _.map data, (game, name) ->
 				name: name
 				players: game.players
-				timer: minutesLeft data.duration
+				timer: timeLeft game.startTime, game.duration * 60 * 1000
 
 			@setState {games: games}
 
 
 Game = React.createClass
 
+	getInitialState: ->
+		seconds: @props.timer
+
 	render: ->
 		<tr>
 			<td>{@props.name}</td>
 			<td>{@props.players}</td>
-			<td>{@props.timer}</td>
+			<td>{@state.seconds}</td>
 		</tr>
+
+	componentDidMount: ->
+		setInterval (() =>
+			if @state.seconds > 0 then @setState {seconds: @state.seconds - 1}), 1000
 
 module.exports = GameList
