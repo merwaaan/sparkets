@@ -9,7 +9,7 @@ module.exports = (grunt) ->
 	grunt.loadNpmTasks('grunt-vows')
 
 	serverScripts = ['src/server/*.coffee', 'src/*.coffee']
-	clientScripts = ['src/client/*.coffee', 'src/*.coffee']
+	clientScripts = ['src/client/*.coffee', 'src/client/components/*.cjsx', 'src/*.coffee']
 
 	grunt.initConfig
 
@@ -26,14 +26,14 @@ module.exports = (grunt) ->
 		browserify:
 			client:
 				options:
-					transform: ['coffeeify']
+					transform: ['coffee-reactify']
 					browserifyOptions:
 						debug: true
-						extensions: ['.coffee']
+						extensions: ['.coffee', '.cjsx']
 				files:
-					'build/client/client.js': clientScripts.concat('!src/client/index.coffee', '!src/client/create.coffee')
 					'build/client/index.js': 'src/client/index.coffee'
 					'build/client/create.js': 'src/client/create.coffee'
+					'build/client/client.js': 'src/client/client.coffee'
 
 		less:
 			dev:

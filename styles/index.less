@@ -1,10 +1,6 @@
 @import "common.less";
 
-/**
- * Game list.
- */
-
-section#join {
+section#game-list {
 	margin: 2em 6em 0 6em;
 	border: 1px solid lightgrey;
 
@@ -14,9 +10,7 @@ section#join {
 
 		th {
 			.gradient-black;
-
 			padding: 0.3em;
-
 			color: @blue;
 			border-bottom: 2px solid @blue;
 			text-align: left;
@@ -24,6 +18,7 @@ section#join {
 		}
 
 		tr {
+
 			&:nth-child(even) {
 				background-color: hsl(0, 0%, 95%);
 			}
@@ -44,46 +39,31 @@ section#join {
 	}
 }
 
-/**
- * "Create a new game" button
- */
-
-button#createGame {
+button#create-game {
 	.gradient-black;
 	.button-behavior;
 	.box-shadow(0, 1px, 3px, @darkblue);
-
 	display: block;
 	width: 14em;
 	padding: .2em .5em;
 	margin: 2em auto;
-
 	color: white;
 	font-size: 14pt;
 	border: 1px solid @blue;
 	border-radius: 3px;
 }
 
-/**
- * Info.
- */
-
 footer {
 	.gradient-black;
 	.box-shadow(0, -2px, 3px, @darkblue);
-
 	position: absolute;
 	bottom: 0;
 	width: 100%;
 	padding-top: 1em;
 	padding-bottom: 1em;
-
 	color: @darkblue;
 	border-top: 4px solid @blue;
-
-	-webkit-column-count: 2;
-	-moz-column-count: 2;
-
+	.column-count(2);
 	font-size: 90%;
 
 	div {
@@ -92,9 +72,7 @@ footer {
 	}
 
 	section {
-		-webkit-column-break-before : always;
-		-moz-column-break-before : always;
-
+		.column-break-before(always);
 		width: 60%;
 		padding: 1em;
 		margin: 0 auto;

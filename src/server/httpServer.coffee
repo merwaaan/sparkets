@@ -17,6 +17,7 @@ webFiles = {
 	'/create.css',
 	'/play.css',
 	'/lib/jquery-1.7.2.min.js',
+	'/lib/react.js',
 	'/js/client/index.js',
 	'/js/client/create.js',
 	'/js/client/client.js',

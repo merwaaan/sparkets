@@ -1,3 +1,5 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:700);
+
 @blue: hsl(194, 94%, 47%);
 @darkblue: darken(@blue, 20%);
 
@@ -72,6 +74,16 @@
 	border-radius: 0.5em;
 }
 
+.column-count(@n) {
+	-webkit-column-count: @n;
+	-moz-column-count: @n;
+}
+
+.column-break-before(@x) {
+	-webkit-column-break-before: @x;
+	-moz-column-break-before: @x;
+}
+
 * {
 	margin: 0;
 	padding: 0;
@@ -106,7 +118,7 @@ header {
 				position: relative;
 			}
 
-			#name2, #name4 {
+			span:nth-child(2), span:nth-child(4) {
 				position: absolute;
 				left: -10000px;
 				top: 0.23em;
@@ -116,6 +128,7 @@ header {
 				text-shadow: 0 0 1px white;
 			}
 		}
+
 		&:nth-child(2) {
 			float: right;
 			color: transparent;
