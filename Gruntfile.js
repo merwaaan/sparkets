@@ -2,6 +2,7 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-coffee');
+  grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-watch');
@@ -42,6 +43,16 @@ module.exports = function(grunt) {
       }
     },
 
+    less: {
+      dev: {
+        files: {
+          'www/index.css': 'styles/index.less',
+          'www/create.css': 'styles/create.less',
+          'www/play.css': 'styles/play.less',
+        }
+      }
+    },
+
     vows: {
       all: {
         options: {
@@ -66,11 +77,15 @@ module.exports = function(grunt) {
     watch: {
       server: {
         files: serverScripts,
-        tasks: ['server']
+        tasks: 'server'
       },
       client: {
         files: clientScripts,
-        tasks: ['client']
+        tasks: 'client'
+      },
+      styles: {
+        files: 'styles/*.less',
+        tasks: 'less'
       }
     }
 
@@ -79,7 +94,7 @@ module.exports = function(grunt) {
   grunt.registerTask('default', ['clean', 'both', 'watch']);
 
   grunt.registerTask('server', ['coffee:server']);
-  grunt.registerTask('client', ['browserify:client']);
+  grunt.registerTask('client', ['browserify:client', 'less']);
   grunt.registerTask('both', ['server', 'client']);
   grunt.registerTask('release', ['both', 'uglify'])
 

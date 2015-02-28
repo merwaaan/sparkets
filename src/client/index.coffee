@@ -22,7 +22,7 @@ $(document).ready () ->
 			new Date(duration - (Date.now() - start)).getMinutes()
 
 		for id, game of data
-			href = '/play/#' + id
+			href = '/play#' + id
 			$('#gameList').append('<tr>
 				<td><a href="' + href + '">' + id + '</a></td>
 				<td>' + game.players + '</td>
