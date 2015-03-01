@@ -7,4 +7,4 @@ $(document).ready () ->
 	React.render(React.createElement(GameList), document.querySelector('#game-list'))
 
 	$('button#create-game').click () ->
-		window.location = '/create'
+		window.location = '/create/'

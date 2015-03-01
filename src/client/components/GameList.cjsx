@@ -58,7 +58,7 @@ Game = React.createClass
 	render: ->
 		<tr>
 			<td>
-				<a href={'/play#' + @props.name}>{@props.name}</a>
+				<a href={'/play/#' + @props.name}>{@props.name}</a>
 			</td>
 			<td>{@props.players}</td>
 			<td>{@state.minutes}:{@state.seconds}</td>

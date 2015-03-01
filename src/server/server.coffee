@@ -2,7 +2,7 @@ logger = require('./logger')
 ServerPreferences = require('./prefs').ServerPreferences
 GameServer = require('./gameServer').GameServer
 
-io = require('socket.io')
+SocketIO = require('socket.io')
 httpServer = require('./httpServer')
 repl = require('webrepl')
 
@@ -22,15 +22,14 @@ class Server
 		@httpServer = httpServer.create()
 
 		# Bind websocket
-		@io = io.listen(@httpServer)
+
+		###
+		# TODO http://socket.io/docs/logging-and-debugging/
 		@io.configure () =>
 			# XXX: Log level can be set only when called first.
 			@io.set('log level', @prefs.io.logLevel)
 			@io.set('transports', @prefs.io.transports)
-
-		# Bind global namespace.
-		@globalSockets = @io.of('')
-		@setupCallbacks()
+		###
 
 		# Start listening!
 		@httpServer.listen @prefs.port, () =>
@@ -38,6 +37,12 @@ class Server
 			@logger.info "Browse to http://localhost:#{@prefs.port} to play!"
 
 			callback()
+
+		@io = SocketIO(@httpServer)
+
+		# Bind global namespace.
+		@globalSockets = @io.sockets
+		@setupCallbacks()
 
 	stop: () ->
 		@httpServer.close()
@@ -73,7 +78,7 @@ class Server
 		# Game with ID already exists, don't create.
 		return @gameList[id] if @gameList[id]?
 
-		@gameList[id] = game = new GameServer(@io.of(id), gamePrefs)
+		@gameList[id] = game = new GameServer(@io.of('/' + id), gamePrefs)
 		game.launch()
 
 		@logger.info "Game #{id} started"

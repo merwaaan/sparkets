@@ -60,14 +60,14 @@ class Client
 		@chat = new Chat(@)
 
 		# Connect to server and set callbacks.
-		@socket = io.connect()
-		@socket = @socket.socket.of(location.hash.substring(1))
+		#@socket = io('/' + location.hash.substring(1))
+		@socket = io('/test')
 
 		# Setup a connexion timeout to redirect to homepage in case of
 		# nonexistent games.
 		@connectionTimeout = setTimeout( ( () ->
 			url = 'http://' + location.hostname + ':' + location.port
-			location.replace(url)), 1500)
+			location.replace(url)), 15000)
 
 		# Bind socket events.
 		@socket.on 'connect', () =>
