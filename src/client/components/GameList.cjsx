@@ -14,6 +14,12 @@ GameList = React.createClass
 				started={game.startTime}
 				duration={game.duration * 60 * 1000} />
 
+		# Ifthere is no available games, say so
+		if games.length is 0
+			games = <tr>
+				<td colSpan=3>No games available</td>
+			</tr>
+
 		<table>
 			<thead>
 				<th>Name</th>
@@ -51,22 +57,31 @@ Game = React.createClass
 
 	render: ->
 		<tr>
-			<td>{@props.name}</td>
+			<td>
+				<a href={'/play#' + @props.name}>{@props.name}</a>
+			</td>
 			<td>{@props.players}</td>
 			<td>{@state.minutes}:{@state.seconds}</td>
 		</tr>
 
 	componentDidMount: ->
-		setInterval @computeTimeLeft, 1000
+		@timerInterval = setInterval @computeTimeLeft, 1000
+
+	componentWillUnmount: ->
+		clearInterval @timerInterval
 
 	computeTimeLeft: (start, duration) ->
-		remaining = new Date(this.props.duration - (Date.now() - this.props.started))
-		@setState
-			minutes: @pad(remaining.getMinutes())
-			seconds: @pad(remaining.getSeconds())
 
-	pad: (time) ->
-		if time.toString().length is 1 then '0' + time else time
+		remaining = new Date(this.props.duration - (Date.now() - this.props.started))
+
+		pad = (time) ->
+			if time.toString().length is 1 then '0' + time else time
+
+		@setState
+			minutes: pad remaining.getMinutes()
+			seconds: pad remaining.getSeconds()
+
+
 
 
 module.exports = GameList

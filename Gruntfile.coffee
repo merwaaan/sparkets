@@ -9,7 +9,7 @@ module.exports = (grunt) ->
 	grunt.loadNpmTasks('grunt-vows')
 
 	serverScripts = ['src/server/*.coffee', 'src/*.coffee']
-	clientScripts = ['src/client/**/*.coffee', 'src/*.coffee']
+	clientScripts = ['src/client/*.coffee', 'src/client/components/*.cjsx', 'src/*.coffee']
 
 	###
 

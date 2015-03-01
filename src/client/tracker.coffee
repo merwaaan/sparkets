@@ -1,5 +1,7 @@
 boxedMixin = require('./boxed')
+BoostEffect = require('./boostEffect')
 FlashEffect = require('./flashEffect')
+TrailEffect = require('./trailEffect')
 
 class Tracker
 

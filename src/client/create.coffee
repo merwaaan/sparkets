@@ -1,3 +1,13 @@
+GameSettings = require('./components/GameSettings')
+Header = require('./components/Header')
+
+$(document).ready () ->
+
+	React.render(React.createElement(Header), document.querySelector('header'))
+	React.render(React.createElement(GameSettings), document.querySelector('#game-settings'))
+
+
+###
 SpriteManager = require('./spriteManager')
 Tooltip = require('./tooltip')
 Range = require('./range')
@@ -238,3 +248,4 @@ $(document).ready () ->
 
 	# Request game list.
 	socket.emit 'get game list'
+###

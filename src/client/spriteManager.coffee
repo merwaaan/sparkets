@@ -1,50 +1,58 @@
+utils = require('../utils')
+
 class SpriteManager
+
 	constructor: () ->
 		@cacheBlack = {}
 		@cacheColored = {}
 
 	get: (type, w, h, color) ->
 
-		# The black version does not exist yet, draw it.
-		idBlack = type+' '+w+' '+h
+		if not @draw[type]?
+			console.warn "There is no drawing function for type `#{type}`"
+			return null
+
+		idBlack = type + ' ' + w + ' ' + h
+		idColored = idBlack + ' ' + color
+
+		# If the black version does not exist yet, draw it
 		if not @cacheBlack[idBlack]?
 
-			# Create a new sprite.
+			# Create a new sprite
 			sprite = document.createElement('canvas')
-			sprite.width = Math.ceil(w)
-			sprite.height = Math.ceil(h)
+			sprite.width = Math.floor(w)
+			sprite.height = Math.floor(h)
 
-			# Fill the sprite with a pattern.
+			# Draw the chosen pattern
 			sprite = @draw[type](sprite, w, h)
 
-			# Store it in the cache.
+			# Store the image in the cache
 			@cacheBlack[idBlack] = sprite
 
-		# The colored version does not exist yet, draw it.
-		idColored = type+' '+w+' '+h+' '+color
+		# If the colored version does not exist yet, draw it.
 		if not @cacheColored[idColored]?
 
-			# Colorize the black version.
+			# Colorize the black version
 			sprite = @colorize(@cacheBlack[idBlack], color)
 
-			# Store it in the cache.
+			# Store the image in the cache
 			@cacheColored[idColored] = sprite
 
 		return @cacheColored[idColored]
 
 	colorize: (sprite, color) ->
 
-		# Create a new sprite.
+		# Create a new sprite
 		colored = document.createElement('canvas')
 		colored.width = sprite.width
 		colored.height = sprite.height
 
-		# Paste the original sprite.
+		# Paste the original sprite
 		ctxt = colored.getContext('2d')
 		ctxt.save()
 		ctxt.drawImage(sprite, 0, 0)
 
-		# Apply a colored overlay where the original sprite isn't transparent.
+		# Apply a colored overlay
 		ctxt.globalCompositeOperation = 'source-in'
 		ctxt.fillStyle = color
 		ctxt.fillRect(0, 0, colored.width, colored.height)
@@ -53,6 +61,7 @@ class SpriteManager
 		return colored
 
 	draw:
+
 		'planet': (sprite, w, h) ->
 			ctxt = sprite.getContext('2d')
 
