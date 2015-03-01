@@ -16,7 +16,7 @@
     "url": "http://github.com/fmdkdd/sparkets.git"
   },
   "scripts": {
-    "start": "node build/server/run.js"
+    "start": "node server/run.js"
   },
   "dependencies": {
     "coffee-script": "1.x",

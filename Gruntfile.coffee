@@ -9,18 +9,29 @@ module.exports = (grunt) ->
 	grunt.loadNpmTasks('grunt-vows')
 
 	serverScripts = ['src/server/*.coffee', 'src/*.coffee']
-	clientScripts = ['src/client/*.coffee', 'src/client/components/*.cjsx', 'src/*.coffee']
+	clientScripts = ['src/client/**/*.coffee', 'src/*.coffee']
+
+	###
+
+	The gist of it:
+
+		- the server scripts go in their own server/ folder
+
+		- the client scripts are browserified and placed in
+		  the www/client folder
+
+		- LESS files are precompiled and placed under www/styles
+
+	###
 
 	grunt.initConfig
 
 		coffee:
-			options:
-				join: true
 			server:
 				expand: true
 				flatten: true
 				src: serverScripts
-				dest: 'build/server/'
+				dest: 'server/'
 				ext: '.js'
 
 		browserify:
@@ -31,30 +42,29 @@ module.exports = (grunt) ->
 						debug: true
 						extensions: ['.coffee', '.cjsx']
 				files:
-					'build/client/index.js': 'src/client/index.coffee'
-					'build/client/create.js': 'src/client/create.coffee'
-					'build/client/client.js': 'src/client/client.coffee'
+					'www/client/index.js': 'src/client/index.coffee'
+					'www/client/create.js': 'src/client/create.coffee'
+					'www/client/client.js': 'src/client/client.coffee'
 
 		less:
-			dev:
-				files:
-					'www/index.css': 'styles/index.less'
-					'www/create.css': 'styles/create.less'
-					'www/play.css': 'styles/play.less'
+			styles:
+				expand: true
+				src: 'www/styles/*.less'
+				ext: '.css'
 
 		vows:
 			all:
 				options:
 					verbose: true
-				src: ['test/*.coffee']
+				src: 'test/*.coffee'
 
 		uglify:
 			client:
 				files:
-					'build/client.min.js': 'build/client.js'
+					'www/client.min.js': 'build/client.js'
 
 		clean:
-			all: ['build']
+			all: ['server', 'www/client', 'www/styles/*.css']
 
 		watch:
 			server:
@@ -64,7 +74,7 @@ module.exports = (grunt) ->
 				files: clientScripts
 				tasks: 'client'
 			styles:
-				files: 'styles/*.less'
+				files: 'www/styles/*.less'
 				tasks: 'less'
 
 	grunt.registerTask('default', ['clean', 'both', 'watch'])
