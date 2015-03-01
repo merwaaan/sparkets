@@ -3,7 +3,7 @@ assert = require('assert')
 
 # Setup
 require('./support/common')
-Ship = require('../build/server/ship').Ship
+Ship = require('../server/ship').Ship
 
 # Mock-up game class.
 class MockGame

@@ -2,7 +2,7 @@ vows = require('vows')
 assert = require('assert')
 
 # Setup
-utils = require('../build/utils')
+utils = require('../server/utils')
 
 exports.suite = vows.describe('Utils')
 

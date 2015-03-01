@@ -3,7 +3,7 @@ assert = require('assert')
 
 # Setup
 http = require('http')
-server = require('../build/server/httpServer').create()
+server = require('../server/httpServer').create()
 
 port = 15000
 

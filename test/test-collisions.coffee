@@ -3,7 +3,7 @@ assert = require('assert')
 
 # Setup
 require('./support/common')
-collisions = require '../build/server/collisions'
+collisions = require '../server/collisions'
 
 # Hitboxes constructors.
 circle = (radius, x = 0, y = 0) ->
