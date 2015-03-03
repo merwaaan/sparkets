@@ -2,8 +2,11 @@ _ = require('lodash')
 
 Header = React.createClass
 
+	getDefaultProps: ->
+		animated: false
+
 	render: ->
-		<div>
+		<header>
 			<h1 ref='title'>
 				<span>SPA</span>
 				<span>ceships&nbsp;</span>
@@ -14,9 +17,12 @@ Header = React.createClass
 			<h1 ref='questionMark'>
 				?
 			</h1>
-		</div>
+		</header>
 
 	componentDidMount: ->
+
+		if not @props.animated
+			return
 
 		#
 

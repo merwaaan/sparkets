@@ -1,5 +1,5 @@
-utils = require './utils'
-logger = require('./logger').static
+utils = require '../utils'
+logger = require('../logger').static
 ChangingObject = require('./changingObject').ChangingObject
 Bullet = require('./bullet').Bullet
 Shield = require('./shield').Shield

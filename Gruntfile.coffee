@@ -1,12 +1,13 @@
 module.exports = (grunt) ->
 
-	grunt.loadNpmTasks('grunt-browserify')
-	grunt.loadNpmTasks('grunt-contrib-coffee')
-	grunt.loadNpmTasks('grunt-contrib-less')
-	grunt.loadNpmTasks('grunt-contrib-uglify')
-	grunt.loadNpmTasks('grunt-contrib-clean')
-	grunt.loadNpmTasks('grunt-contrib-watch')
-	grunt.loadNpmTasks('grunt-vows')
+	grunt.loadNpmTasks 'grunt-browserify'
+	grunt.loadNpmTasks 'grunt-contrib-coffee'
+	grunt.loadNpmTasks 'grunt-contrib-less'
+	grunt.loadNpmTasks 'grunt-contrib-uglify'
+	grunt.loadNpmTasks 'grunt-contrib-copy'
+	grunt.loadNpmTasks 'grunt-contrib-clean'
+	grunt.loadNpmTasks 'grunt-contrib-watch'
+	grunt.loadNpmTasks 'grunt-vows'
 
 	serverScripts = ['src/server/*.coffee', 'src/*.coffee']
 	clientScripts = ['src/client/*.coffee', 'src/client/components/*.cjsx', 'src/*.coffee']
@@ -15,12 +16,11 @@ module.exports = (grunt) ->
 
 	The gist of it:
 
-		- the server scripts go in their own server/ folder
+		- Everything is compiled/copied under build/
 
-		- the client scripts are browserified and placed in
-		  the www/client folder
+		- the server scripts go in build/server
 
-		- LESS files are precompiled and placed under www/styles
+		- everything else goes in build/www/
 
 	###
 
@@ -29,9 +29,9 @@ module.exports = (grunt) ->
 		coffee:
 			server:
 				expand: true
-				flatten: true
-				src: serverScripts
-				dest: 'server/'
+				cwd: 'src/'
+				src: ['server/*.coffee', '*.coffee']
+				dest: 'build/server/'
 				ext: '.js'
 
 		browserify:
@@ -42,15 +42,26 @@ module.exports = (grunt) ->
 						debug: true
 						extensions: ['.coffee', '.cjsx']
 				files:
-					'www/client/index.js': 'src/client/index.coffee'
-					'www/client/create.js': 'src/client/create.coffee'
-					'www/client/client.js': 'src/client/client.coffee'
+					'build/www/client.js': 'src/client/index.coffee'
 
 		less:
 			styles:
+				files:
+					'build/www/sparkets.css': 'www/sparkets.less'
+
+		copy:
+			html:
 				expand: true
-				src: 'www/styles/*.less'
-				ext: '.css'
+				src: 'www/*.html'
+				dest: 'build/'
+			lib:
+				expand: true
+				src: 'www/lib/*'
+				dest: 'build' # different version depending on build type?
+			assets:
+				expand: true
+				src: 'www/img/*'
+				dest: 'build/'
 
 		vows:
 			all:
@@ -64,7 +75,7 @@ module.exports = (grunt) ->
 					'www/client.min.js': 'build/client.js'
 
 		clean:
-			all: ['server', 'www/client', 'www/styles/*.css']
+			all: 'build'
 
 		watch:
 			server:
@@ -76,12 +87,18 @@ module.exports = (grunt) ->
 			styles:
 				files: 'www/styles/*.less'
 				tasks: 'less'
+			www:
+				files: ['www/**/*', '!www/**/*.less']
+				tasks: 'copy'
 
-	grunt.registerTask('default', ['clean', 'both', 'watch'])
 
-	grunt.registerTask('server', ['coffee:server'])
-	grunt.registerTask('client', ['browserify:client', 'less'])
-	grunt.registerTask('both', ['server', 'client'])
-	grunt.registerTask('release', ['both', 'uglify'])
+	grunt.registerTask 'default', ['clean', 'all', 'watch']
 
-	grunt.registerTask('test', ['vows:all'])
+	grunt.registerTask 'all', ['server', 'client', 'www']
+	grunt.registerTask 'server', ['coffee:server']
+	grunt.registerTask 'client', ['browserify:client']
+	grunt.registerTask 'www', ['less', 'copy']
+
+	grunt.registerTask 'release', ['all', 'uglify']
+
+	grunt.registerTask 'test', ['vows:all']

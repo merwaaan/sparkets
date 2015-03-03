@@ -1,53 +1,57 @@
-class Chat
-	constructor: (@client) ->
+Chat = React.createClass
 
-		@chat = $('#chat')
-		@input = $('#chatInput')
+	getInitialState: ->
+		opened: false
 
-		@displayDuration = 8000
+	render: ->
 
-		@setInputHandlers()
+		inputStyle = {visibility: if @state.opened then 'visible' else 'hidden'}
 
-	setInputHandlers: () ->
+		<div className='chat'>
 
-		$(document).keyup ({keyCode}) =>
-			return if @client.menu.isOpen()
+			<div className='messages'>
+			</div>
 
-			# Open the chat when T is pressed.
-			if keyCode is 84 and not @isOpen()
+			<input ref='input'
+				type='text'
+				style={inputStyle} />
+
+		</div>
+
+	componentDidMount: () ->
+
+		document.addEventListener 'keyup', ({keyCode}) =>
+
+			#return if @client.menu.isOpen()
+
+			# T: open the chat
+			if keyCode is 84 and not @state.opened
 				@open()
 
-			# Close the chat when Escape is pressed.
-			else if keyCode is 27 and @isOpen()
+			# Esc: close the chat
+			else if keyCode is 27 and @state.opened
 				@close()
 
-			# Send the message when Enter is pressed.
-			else if keyCode is 13 and @isOpen()
+			# Enedtefalseend message
+			else if keyCode is 13 and @state.opened
 				@send(@input.val())
 				@close()
 
 	open: () ->
-		@input.removeClass('hidden')
-		@input.addClass('visible')
-
-		@input.val('')
-		@input.focus()
+		@setState {opened: true}
+		@refs.input.getDOMNode().value = ''
+		@refs.input.getDOMNode().focus()
 
 	close: () ->
-		@input.removeClass('visible')
-		@input.addClass('hidden')
-
-		@input.blur()
-
-	isOpen: () ->
-		@input.hasClass('visible')
+		@setState {opened: false}
+		@refs.input.getDOMNode().blur()
 
 	send: (message) ->
 		@client.socket.emit 'message',
 				message: message
 
 	display: (data) ->
-
+		###
 		colorize = (text, color) ->
 			'<span style="color:hsl('+color[0]+','+color[1]+'%,'+color[2]+'%)">'+text+'</span>'
 
@@ -64,5 +68,6 @@ class Chat
 		setTimeout( (() =>
 			line.animate({opacity: 'hide', height: 'toggle'}, 300, () -> line.detach())),
 			@displayDuration)
+		###
 
 module.exports = Chat

@@ -1,5 +1,5 @@
-utils = require './utils'
-logger = require('./logger').static
+utils = require '../utils'
+logger = require('../logger').static
 
 ddebug = (msg) -> logger.log 'collisions', msg
 

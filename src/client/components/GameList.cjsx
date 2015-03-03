@@ -8,7 +8,7 @@ GameList = React.createClass
 	render: ->
 
 		games = _.map @state.games, (game, name) =>
-			<Game
+			<Game {...@props}
 				name={name}
 				players={game.players}
 				started={game.startTime}
@@ -20,7 +20,7 @@ GameList = React.createClass
 				<td colSpan=3>No games available</td>
 			</tr>
 
-		<table>
+		<table className='game-list'>
 			<thead>
 				<th>Name</th>
 				<th>Players</th>
@@ -58,7 +58,7 @@ Game = React.createClass
 	render: ->
 		<tr>
 			<td>
-				<a href={'/play/#' + @props.name}>{@props.name}</a>
+				<a onClick={@enterGame}>{@props.name}</a>
 			</td>
 			<td>{@props.players}</td>
 			<td>{@state.minutes}:{@state.seconds}</td>
@@ -69,6 +69,9 @@ Game = React.createClass
 
 	componentWillUnmount: ->
 		clearInterval @timerInterval
+
+	enterGame: () ->
+		@props.onSwitch 'play'
 
 	computeTimeLeft: (start, duration) ->
 

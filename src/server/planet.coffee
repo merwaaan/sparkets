@@ -1,5 +1,5 @@
 ChangingObject = require('./changingObject').ChangingObject
-utils = require './utils'
+utils = require '../utils'
 
 class Planet extends ChangingObject
 	constructor: (@game, x, y, force) ->

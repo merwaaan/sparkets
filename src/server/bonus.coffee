@@ -1,4 +1,4 @@
-utils = require './utils'
+utils = require '../utils'
 ChangingObject = require('./changingObject').ChangingObject
 stateMachineMixin = require('./stateMachine').mixin
 Rope = require('./rope').Rope

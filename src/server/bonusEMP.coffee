@@ -1,5 +1,5 @@
 EMP = require('./EMP').EMP
-utils = require('./utils')
+utils = require('../utils')
 
 class BonusEMP
 	type: 'EMP'

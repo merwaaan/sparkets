@@ -1,45 +1,43 @@
 @import "common.less";
 
-section#game-list {
-	margin: 2em 6em 0 6em;
+table.game-list {
+	width: 70%;
+	margin: auto;
+	margin-top: 2em;
 	border: 1px solid lightgrey;
+	border-collapse: collapse;
 
-	table {
-		width: 100%;
-		border-collapse: collapse;
+	th {
+		.gradient-black;
+		padding: 0.3em;
+		color: @blue;
+		border-bottom: 2px solid @blue;
+		text-align: left;
+		font-weight: bold;
+	}
 
-		th {
-			.gradient-black;
-			padding: 0.3em;
-			color: @blue;
-			border-bottom: 2px solid @blue;
-			text-align: left;
-			font-weight: bold;
+	tr {
+
+		&:nth-child(even) {
+			background-color: hsl(0, 0%, 95%);
 		}
 
-		tr {
-
-			&:nth-child(even) {
-				background-color: hsl(0, 0%, 95%);
-			}
-
-			&:nth-child(odd) {
-				background-color: hsl(0, 0%, 90%);
-			}
+		&:nth-child(odd) {
+			background-color: hsl(0, 0%, 90%);
 		}
+	}
 
-		td {
-			padding: 0.3em;
-		}
+	td {
+		padding: 0.3em;
+	}
 
-		a {
-			text-decoration: none;
-			color: hsl(-150, 60%, 45%);
-		}
+	a {
+		text-decoration: none;
+		color: hsl(-150, 60%, 45%);
 	}
 }
 
-button#create-game {
+button.create-game {
 	.gradient-black;
 	.button-behavior;
 	.box-shadow(0, 1px, 3px, @darkblue);
@@ -51,39 +49,4 @@ button#create-game {
 	font-size: 14pt;
 	border: 1px solid @blue;
 	border-radius: 3px;
-}
-
-footer {
-	.gradient-black;
-	.box-shadow(0, -2px, 3px, @darkblue);
-	position: absolute;
-	bottom: 0;
-	width: 100%;
-	padding-top: 1em;
-	padding-bottom: 1em;
-	color: @darkblue;
-	border-top: 4px solid @blue;
-	.column-count(2);
-	font-size: 90%;
-
-	div {
-		margin: auto;
-		width: 80%;
-	}
-
-	section {
-		.column-break-before(always);
-		width: 60%;
-		padding: 1em;
-		margin: 0 auto;
-
-		h3 {
-			color: @blue;
-		}
-
-		ul {
-			list-style-position: inside;
-			list-style-type: square;
-		}
-	}
 }

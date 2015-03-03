@@ -1,3 +1,79 @@
+Menu = React.createClass
+
+	render: ->
+		###
+		  <section id="menu" class="hidden">
+
+		    <h1>SPARKETS!</h1>
+
+		    <section id="timeLeft">
+		    </section>
+
+		    <section id="scores">
+
+				<table>
+				  <thead>
+					 <tr>
+						<th>#</th>
+						<th></th>
+						<th><img src="/img/iconDeath.svg" alt="Deaths" width="30"/></th>
+						<th><img src="/img/iconKill.svg" alt="Kills" width="30"/></th>
+						<th></th>
+					 </tr>
+				  </thead>
+				  <tbody>
+				  </tbody>
+				</table>
+
+			 </section>
+
+			 <section id="customize" style="visibility:hidden">
+
+				<div id="colorWheelBox">
+				  <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+					 <g transform="translate(100,100) scale(2)">
+						<circle cx="0" cy="0" r="20%" style="fill: white"/>
+						<path id="shipPreview"
+								d="M -7 10 L 0 -10 L 7 10 L 0 6 Z"
+								style="stroke-width: 3;
+										 stroke: black;
+										 stroke-linejoin: round;
+										 fill: white" >
+						</path>
+					 </g>
+				  </svg>
+
+				  <img id="colorWheel" src="/img/colorWheel.png"/>
+
+				  <img id="colorCursor" src="/img/colorCursor.png"/>
+				</div>
+
+				<form id="nameForm">
+				  <input type="text" id="name" placeholder="Name"/>
+				  <input type="submit" value="Save"/>
+				</form>
+
+				<div id="optionsBox">
+				  <span class="option">
+					 <input type="checkbox" value="false" id="displayNamesCheck"/>
+					 <label for="displayNamesCheck">Always display players' names</label>
+				  </span>
+				</div>
+
+			 </section>
+
+		    <section id="buttons">
+		      <button id="resumeButton">Resume</button>
+		      <button id="quitButton">Quit this game</button>
+		    </section>
+
+		  </section>
+		###
+		<div>jhkjhj</div>
+
+module.exports = Menu
+
+###
 class Menu
 	constructor: (@client) ->
 
@@ -221,3 +297,4 @@ class Menu
 		$('#timeLeft').html(timeLeft.getMinutes() + ':' + pad(timeLeft.getSeconds()))
 
 module.exports = Menu
+###

@@ -11,16 +11,10 @@ mime = (path) ->
 
 webFiles = {
 	'/' : '/index.html',
-	'/create/' : '/create.html',
-	'/play/' : '/play.html',
-	'/styles/index.css',
-	'/styles/create.css',
-	'/styles/play.css',
+	'/client.js',
+	'/sparkets.css',
 	'/lib/jquery-1.7.2.min.js',
 	'/lib/react.js',
-	'/client/index.js',
-	'/client/create.js',
-	'/client/client.js',
 	'/favicon.ico',
 	'/img/colorWheel.png',
 	'/img/colorCursor.png',
@@ -44,7 +38,7 @@ handleRequest = (req, res) ->
 	if webFiles[path]?
 		# Server.js file is in build/server and all web files
 		# are in www/
-		fs.readFile __dirname + '/../www' + webFiles[path], (err, data) ->
+		fs.readFile __dirname + '/../../www' + webFiles[path], (err, data) ->
 			return send404(res) if err?
 			res.writeHead 200, 'Content-Type': mime(webFiles[path])
 			res.write data, 'utf8'
