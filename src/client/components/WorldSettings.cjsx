@@ -1,3 +1,5 @@
+React = require 'react/addons'
+
 WorldSettings = React.createClass
 
 	render: ->

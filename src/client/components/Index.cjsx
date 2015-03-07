@@ -2,7 +2,13 @@ Footer = require './Footer'
 GameList = require './GameList'
 Header = require './Header'
 
+React = require 'react/addons'
+Link = require('react-router').Link
+
 Index = React.createClass
+
+	propTypes:
+		socket: React.PropTypes.object.isRequired
 
 	render: ->
 
@@ -12,16 +18,14 @@ Index = React.createClass
 
 			<GameList {...@props} />
 
-			<button className="create-game"
-				onClick={@createGame}>
-				Create a new Game
-			</button>
+			<Link to='create'>
+				<button className="create-game">
+					Create a new Game
+				</button>
+			</Link>
 
 			<Footer />
 
 		</div>
-
-	createGame: ->
-		@props.onSwitch 'create'
 
 module.exports = Index

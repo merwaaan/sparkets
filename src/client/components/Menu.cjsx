@@ -1,159 +1,70 @@
+Countdown = require './Countdown'
+Customization = require './Customization'
+Scoreboard = require './Scoreboard'
+Client = require '../client'
+
+React = require 'react/addons'
+Router = require 'react-router'
+
 Menu = React.createClass
 
+	propTypes:
+		client = React.PropTypes.instanceOf(Client).isRequired
+
+	getInitialState: ->
+		opened: true
+
 	render: ->
-		###
-		  <section id="menu" class="hidden">
 
-		    <h1>SPARKETS!</h1>
+		style =
+			display: if @state.opened then 'block' else 'none'
 
-		    <section id="timeLeft">
-		    </section>
+		<section className='menu'
+			style={style}>
 
-		    <section id="scores">
+			<h1>Sparkets!</h1>
 
-				<table>
-				  <thead>
-					 <tr>
-						<th>#</th>
-						<th></th>
-						<th><img src="/img/iconDeath.svg" alt="Deaths" width="30"/></th>
-						<th><img src="/img/iconKill.svg" alt="Kills" width="30"/></th>
-						<th></th>
-					 </tr>
-				  </thead>
-				  <tbody>
-				  </tbody>
-				</table>
+			<Countdown
+				startTime={@props.client.gameStartTime}
+				duration={@props.client.gameDuration} />
 
-			 </section>
+			<Scoreboard
+				ships={@props.client.ships}/>
 
-			 <section id="customize" style="visibility:hidden">
+			<Customization
+				client={@props.client} />
 
-				<div id="colorWheelBox">
-				  <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
-					 <g transform="translate(100,100) scale(2)">
-						<circle cx="0" cy="0" r="20%" style="fill: white"/>
-						<path id="shipPreview"
-								d="M -7 10 L 0 -10 L 7 10 L 0 6 Z"
-								style="stroke-width: 3;
-										 stroke: black;
-										 stroke-linejoin: round;
-										 fill: white" >
-						</path>
-					 </g>
-				  </svg>
+			<div className='buttons'>
+				<button onClick={@close}>Resume</button>
+				<Router.Link to='/'><button>Quit</button></Router.Link>
+			</div>
+		</section>
 
-				  <img id="colorWheel" src="/img/colorWheel.png"/>
+	componentDidMount: ->
 
-				  <img id="colorCursor" src="/img/colorCursor.png"/>
-				</div>
+		# Tab: toggle the menu
+		document.addEventListener 'keydown', (event) =>
+			if event.keyCode is 9
+				event.preventDefault()
+				if not @state.opened then @open() else @close()
 
-				<form id="nameForm">
-				  <input type="text" id="name" placeholder="Name"/>
-				  <input type="submit" value="Save"/>
-				</form>
+		# Render on connection, to bind server data to
+		# the countdown and the customization panel
+		@props.client.socket.on 'connected', () =>
+			@forceUpdate()
+			# XXX not working because of wrong callback order
 
-				<div id="optionsBox">
-				  <span class="option">
-					 <input type="checkbox" value="false" id="displayNamesCheck"/>
-					 <label for="displayNamesCheck">Always display players' names</label>
-				  </span>
-				</div>
+	open: () ->
+		@setState {opened: true}
 
-			 </section>
+	close: () ->
+		@setState {opened: false}
 
-		    <section id="buttons">
-		      <button id="resumeButton">Resume</button>
-		      <button id="quitButton">Quit this game</button>
-		    </section>
-
-		  </section>
-		###
-		<div>jhkjhj</div>
 
 module.exports = Menu
 
+
 ###
-class Menu
-	constructor: (@client) ->
-
-		@menu = $('section#menu')
-		@closeButton = $('#closeButton')
-
-		# Customization panel.
-		@wheelBox = $('#colorWheelBox')
-		@shipPreview = $('#shipPreview')
-		@wheel = $('#colorWheel')
-		@colorCursor = $('#colorCursor')
-		@form = $('#nameForm')
-		@nameField = $('#name')
-		@displayNamesCheck = $('#displayNamesCheck')
-
-		# Scores panel.
-		@scoreTable = $('#scores table tbody')
-
-		@currentColor = null
-
-		@setInputHandlers()
-
-	setInputHandlers: () ->
-		pickColor = (event) =>
-			@currentColor = @readColor(event)
-			@updatePreview(@currentColor)
-
-		@wheelBox.mousedown (event) =>
-			return if event.which isnt 1 # Only left click triggers.
-
-			event.preventDefault()
-			pickColor(event)
-
-			# Can hold mouse to choose color.
-			@wheelBox.mousemove (event) =>
-				return if event.which isnt 1 # Only left click triggers.
-
-				event.preventDefault()
-				pickColor(event)
-
-		$(document).mouseup (event) =>
-			return if event.which isnt 1 # Only left click triggers.
-
-			# Mouse move can be triggered without any click.
-			@wheelBox.unbind('mousemove')
-
-		# Send users preferences and save them locally.
-		@form.submit (event) =>
-			@saveLocalPreferences()
-			@sendPreferences()
-			event.preventDefault()
-
-		# Toggle the name display option.
-		@displayNamesCheck.change (event) =>
-			@client.displayNames = @displayNamesCheck.is(':checked')
-
-		# Close the menu.
-		@closeButton.click (event) =>
-			if @isOpen() and event.which is 1 # Left click
-				@close()
-				event.stopPropagation()
-
-		# Toggle the menu when M is pressed.
-		$(document).keyup ({keyCode}) =>
-			return if @client.chat.isOpen()
-
-			# Check that we are not typing the letter M in the name field.
-			else if keyCode is 77 and $('#customize input:focus').length is 0
-				@toggle()
-
-		#
-		$('#resumeButton').click () =>
-			@close()
-
-		$('#quitButton').click () =>
-			location = '/'
-			# XXX: let the server know, maybe...
-
-	toggle: () ->
-		if @isOpen() then @close() else @open()
 
 	open: () ->
 		@updateScores()
@@ -182,67 +93,6 @@ class Menu
 	isOpen: () ->
 		@menu.hasClass('visible')
 
-	# Send user preferences to the server.
-	sendPreferences: () ->
-		color = @currentColor
-		name = @nameField.val() if @nameField.val().length > 0
-
-		@client.socket.emit 'prefs changed',
-			color: color
-			name: name
-
-	# Store user preferences in the browser local storage.
-	saveLocalPreferences: () ->
-		localStorage['sparkets.color'] = @currentColor if @currentColor?
-		localStorage['sparkets.name'] = @nameField.val() if @nameField.val().length > 0
-
-		console.info 'Preferences saved.'
-
-	# Restores user preferences from browser local storage.
-	restoreLocalPreferences: () ->
-		if localStorage['sparkets.color']?
-			@currentColor = localStorage['sparkets.color'].split(',')
-		if localStorage['sparkets.name']
-			@nameField.val(localStorage['sparkets.name'])
-
-		console.info 'Preferences restored.'
-
-	# Return the color chosen from the colorwheel.
-	readColor: (event) ->
-		maxRadius = 100
-		minRadius = 50
-		maxLum = 80
-		minLum = 30
-
-		center =
-			x: @wheelBox.offset().left + @wheelBox.width()/2
-			y: @wheelBox.offset().top + @wheelBox.height()/2
-
-		dx = center.x - event.pageX
-		dy = center.y - event.pageY
-
-		h = Math.atan2(dx, dy)
-		h += 2*Math.PI if h < 0
-		hDeg = Math.round(h * 180/Math.PI)
-
-		d = utils.distance(0, 0, dx, dy)
-
-		# Clamp distance to colorwheel disc.
-		d = Math.max(minRadius, Math.min(d, maxRadius))
-
-		l = Math.round(minLum + (maxRadius-d)/(maxRadius-minRadius)*(maxLum-minLum))
-
-		# Put the cursor at the clamped click position.
-		x = center.x - Math.sin(h) * d
-		y = center.y - Math.cos(h) * d
-
-		cursor = $('#colorCursor')
-		cursor.css('display', 'block')
-		cursor.offset
-			left: x - @colorCursor.width()/2
-			top: y - @colorCursor.height()/2
-
-		return [hDeg, 60, l]
 
 	updatePreview: (color) ->
 		# Change the color of the ship preview.
@@ -253,48 +103,4 @@ class Menu
 
 		@shipPreview.attr('style', style)
 
-	updateScores: () ->
-		@scoreTable.empty()
-
-		scores = []
-		for id, ship of @client.ships
-			scores.push
-				name: ship.name or 'unnamed'
-				color: ship.color
-				deaths: ship.stats.deaths
-				kills: ship.stats.kills
-				score: ship.stats.kills - ship.stats.deaths
-
-		# Sort scores.
-		scores.sort( (a, b) -> b.score - a.score)
-
-		for i in [0...scores.length]
-			s = scores[i]
-			cssColor = 'hsl('+s.color[0]+','+s.color[1]+'%,'+s.color[2]+'%)'
-			@scoreTable.append(
-					'<tr><td>' + (i+1) + '</td>' +
-					'<td><span class="colorBullet" style="background-color: ' + cssColor + '">&nbsp;</span>' + s.name + '</span></td>' +
-					'<td>' +	s.deaths + '</td>' +
-					'<td>' +	s.kills + '</td>' +
-					'<td>' + s.score + '</td></tr>')
-
-	updateTime: () ->
-		if @client.gameEnded
-			clearInterval(@clockInterval)
-			$('#timeLeft').html("The game has ended!")
-			return
-
-		# Compute in ms since Epoch.
-		elapsed = Date.now() - @client.gameStartTime
-		remaining = @client.gameDuration * 60 * 1000 - elapsed
-
-		# Use Date for conversion and pretty printing.
-		timeLeft = new Date(remaining)
-
-		pad = (n) ->
-			if n < 10 then '0'+n else n
-
-		$('#timeLeft').html(timeLeft.getMinutes() + ':' + pad(timeLeft.getSeconds()))
-
-module.exports = Menu
 ###

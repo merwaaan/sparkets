@@ -1,24 +1,31 @@
-_ = require('lodash')
+Countdown = require './Countdown'
+
+React = require 'react/addons'
+Router = require 'react-router'
 
 GameList = React.createClass
 
+	propTypes:
+		socket: React.PropTypes.object.isRequired
+
 	getInitialState: ->
-		games: []
+		games: {}
 
 	render: ->
 
-		games = _.map @state.games, (game, name) =>
-			<Game {...@props}
-				name={name}
-				players={game.players}
-				started={game.startTime}
-				duration={game.duration * 60 * 1000} />
+		games = (<Game {...@props}
+			key = {name}
+			name={name}
+			players={game.players}
+			startTime={game.startTime}
+			duration={game.duration * 60 * 1000} /> for name, game of @state.games)
 
-		# Ifthere is no available games, say so
+		# If there is no available games, say so
 		if games.length is 0
-			games = <tr>
-				<td colSpan=3>No games available</td>
-			</tr>
+			games =
+				<tr>
+					<td colSpan=3>No games available</td>
+				</tr>
 
 		<table className='game-list'>
 			<thead>
@@ -33,58 +40,46 @@ GameList = React.createClass
 
 	componentDidMount: ->
 
-		# Connect to the server
-		@socket = io.connect()
+		# Fetch the game list before mounting...
+		@props.socket.emit 'get game list'
 
-		# Grab the game list every minute
-		setInterval( (() =>
-			@socket.emit('get game list')), 60 * 1000)
-
-		# Fetch the game list at first connection
-		@socket.on 'connect', () =>
-			@socket.emit 'get game list'
+		# ... and then every minute
+		@updateInterval = setInterval @update, 1000
 
 		# Update the list of active games
-		@socket.on 'game list', (data) =>
-			@setState {games: data}
+		@props.socket.on 'game list', @onGameList
+
+	componentWillUnmount: ->
+
+		clearInterval @updateInterval
+
+		@props.socket.removeListener 'game list', @onGameList
+
+	update: ->
+		@props.socket.emit 'get game list'
+
+	onGameList: (data) ->
+		@setState {games: data}
 
 
 Game = React.createClass
 
-	getInitialState: ->
-		minutes: 0
-		seconds: 0
-
 	render: ->
 		<tr>
 			<td>
-				<a onClick={@enterGame}>{@props.name}</a>
+				<Router.Link to='play' params={{gameId: @props.name}}>
+				{@props.name}
+				</Router.Link>
 			</td>
-			<td>{@props.players}</td>
-			<td>{@state.minutes}:{@state.seconds}</td>
+			<td>
+				{@props.players}
+			</td>
+			<td>
+				<Countdown
+					startTime={@props.startTime}
+					duration={@props.duration} />
+			</td>
 		</tr>
-
-	componentDidMount: ->
-		@timerInterval = setInterval @computeTimeLeft, 1000
-
-	componentWillUnmount: ->
-		clearInterval @timerInterval
-
-	enterGame: () ->
-		@props.onSwitch 'play'
-
-	computeTimeLeft: (start, duration) ->
-
-		remaining = new Date(this.props.duration - (Date.now() - this.props.started))
-
-		pad = (time) ->
-			if time.toString().length is 1 then '0' + time else time
-
-		@setState
-			minutes: pad remaining.getMinutes()
-			seconds: pad remaining.getSeconds()
-
-
 
 
 module.exports = GameList

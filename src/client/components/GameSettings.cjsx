@@ -1,7 +1,9 @@
 BonusSettings = require('./BonusSettings')
 WorldSettings = require('./WorldSettings')
 spriteManager = require('../spriteManager')
-_ = require('lodash')
+
+React = require 'react/addons'
+_ = require('lodash') # remove
 
 GameSettings = React.createClass
 
@@ -16,6 +18,22 @@ GameSettings = React.createClass
 			grenade: 0.5
 
 	componentWillMount: ->
+
+		###
+		socket.on 'game already exists', () ->
+			$('#error').html('Name already exists')
+
+		socket.on 'game created', (data) ->
+			# Redirect to the client page.
+			window.location.replace('../play/#' + data.id)
+
+		socket.on 'game list', (data) ->
+			idList = Object.keys(data)
+			if idList.length > 0
+				gameListRegexp = new RegExp('^(' + idList.join('|') + ')$')
+			else
+				gameListRegexp = null
+		###
 
 		@spriteManager = new spriteManager()
 
@@ -42,28 +60,6 @@ GameSettings = React.createClass
 			</div>
 
 		</div>
-
-	componentDidMount: ->
-
-		# Connect to server
-		socket = io.connect()
-
-		socket.on 'connect', () ->
-			# Do something?
-
-		socket.on 'game already exists', () ->
-			$('#error').html('Name already exists')
-
-		socket.on 'game created', (data) ->
-			# Redirect to the client page.
-			window.location.replace('../play/#' + data.id)
-
-		socket.on 'game list', (data) ->
-			idList = Object.keys(data)
-			if idList.length > 0
-				gameListRegexp = new RegExp('^(' + idList.join('|') + ')$')
-			else
-				gameListRegexp = null
 
 	changeQuantity: (name, quantity) ->
 		newState = _.cloneDeep @state

@@ -42,7 +42,7 @@ module.exports = (grunt) ->
 						debug: true
 						extensions: ['.coffee', '.cjsx']
 				files:
-					'build/www/client.js': 'src/client/index.coffee'
+					'build/www/client.js': 'src/client/components/Sparkets.cjsx'
 
 		less:
 			styles:

@@ -1,28 +1,51 @@
+Client = require '../client'
+Ship = require '../ship'
+utils = require '../../utils'
+
+React = require 'react/addons'
+
 Chat = React.createClass
+
+	propTypes:
+		client: React.PropTypes.instanceOf(Client).isRequired
+		maxMessages: React.PropTypes.number
+
+	getDefaultProps: ->
+		maxMessages: 5
 
 	getInitialState: ->
 		opened: false
+		messages: []
 
 	render: ->
 
 		inputStyle = {visibility: if @state.opened then 'visible' else 'hidden'}
 
-		<div className='chat'>
+		messages = <Message
+			data={data}
+			ship={@props.client.ships[data.shipId]} /> for data in @state.messages
 
-			<div className='messages'>
-			</div>
+		<section className='chat'>
 
 			<input ref='input'
 				type='text'
 				style={inputStyle} />
 
-		</div>
+			<div className='messages'>
+				{messages}
+			</div>
+
+		</section>
 
 	componentDidMount: () ->
 
-		document.addEventListener 'keyup', ({keyCode}) =>
+		@input = @refs.input.getDOMNode()
 
-			#return if @client.menu.isOpen()
+		# Server events
+		@props.client.socket.on 'player says', @onPlayerSays
+
+		# Keyboard events
+		document.addEventListener 'keyup', ({keyCode}) =>
 
 			# T: open the chat
 			if keyCode is 84 and not @state.opened
@@ -32,34 +55,40 @@ Chat = React.createClass
 			else if keyCode is 27 and @state.opened
 				@close()
 
-			# Enedtefalseend message
+			# Enter: send message
 			else if keyCode is 13 and @state.opened
-				@send(@input.val())
+				@send @input.value
 				@close()
+
+	componentWillUnmount: ->
+
+		@props.client.socket.removeListener 'player says', @onPlayerSays
 
 	open: () ->
 		@setState {opened: true}
-		@refs.input.getDOMNode().value = ''
-		@refs.input.getDOMNode().focus()
+		@input.value = ''
+		@input.focus()
 
 	close: () ->
 		@setState {opened: false}
-		@refs.input.getDOMNode().blur()
+		@input.blur()
 
 	send: (message) ->
-		@client.socket.emit 'message',
+		if message.length > 0
+			@props.client.socket.emit 'player says',
 				message: message
 
-	display: (data) ->
+	onPlayerSays: (data) ->
+
+		messages = @state.messages.slice()
+		messages.push data
+
+		if messages.length > @props.maxMessages
+			messages.pop()
+
+		@setState {messages: messages}
+
 		###
-		colorize = (text, color) ->
-			'<span style="color:hsl('+color[0]+','+color[1]+'%,'+color[2]+'%)">'+text+'</span>'
-
-		name = @client.ships[data.id].name
-		color = @client.ships[data.id].color
-		img = '<img width="30" src="/img/iconTalk.svg"/>'
-		message = colorize(name, color) + ' ' + img + ' "' + data.message + '"'
-
 		# Append the message to the chat.
 		line = $('<div style="display:none">' + message + '</div>').appendTo(@chat)
 		line.fadeIn(300)
@@ -69,5 +98,23 @@ Chat = React.createClass
 			line.animate({opacity: 'hide', height: 'toggle'}, 300, () -> line.detach())),
 			@displayDuration)
 		###
+
+
+Message = React.createClass
+
+	propTypes:
+		ship: React.PropTypes.instanceOf(Ship).isRequired
+		data: React.PropTypes.shape(
+			shipId: React.PropTypes.number
+			message: React.PropTypes.string
+		).isRequired
+
+	render: ->
+		<span style={{color: utils.color(@props.ship.color)}}>
+			{@props.ship.name}
+			<img width='30px' src='/img/iconTalk.svg' />
+			{@props.data.message}
+		</span>
+
 
 module.exports = Chat

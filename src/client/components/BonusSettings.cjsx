@@ -1,4 +1,5 @@
-_ = require('lodash')
+React = require 'react/addons'
+_ = require('lodash') # remove lodash
 
 BonusSettings = React.createClass
 

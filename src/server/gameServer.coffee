@@ -54,11 +54,8 @@ class GameServer
 			socket.on 'prefs changed', (data) =>
 				@players[socket.id].changePrefs(data.name, data.color)
 
-			socket.on 'message', (data) =>
-				@events.push
-					type: 'message'
-					id: @players[socket.id].ship.id
-					message: data.message
+			socket.on 'player says', (data) =>
+				@broadcastMessage socket, data
 
 			socket.on 'disconnect', () =>
 				@clientDisconnect(socket)

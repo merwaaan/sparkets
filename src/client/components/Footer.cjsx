@@ -1,3 +1,5 @@
+React = require 'react/addons'
+
 Footer = React.createClass
 
 	render: ->

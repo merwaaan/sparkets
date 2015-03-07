@@ -1,11 +1,12 @@
-boxedMixin = require('./boxed')
-ExplosionEffect = require('./explosionEffect')
-FlashEffect = require('./flashEffect')
-DislocateEffect = require('./dislocateEffect')
+BoostEffect = require './boostEffect'
+BoxedMixin = require './boxed'
+DislocateEffect = require './dislocateEffect'
+ExplosionEffect = require './explosionEffect'
+FlashEffect = require './flashEffect'
 
 class Ship
 
-	boxedMixin.call(@prototype)
+	BoxedMixin.call(@prototype)
 
 	constructor: (@client, ship) ->
 		@serverUpdate(ship)
