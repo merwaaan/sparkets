@@ -1,3 +1,4 @@
+Footer = require './Footer'
 GameSettings = require './GameSettings'
 Header = require './Header'
 
@@ -9,6 +10,7 @@ Create = React.createClass
 		<div>
 			<Header />
 			<GameSettings />
+			<Footer />
 		</div>
 
 module.exports = Create

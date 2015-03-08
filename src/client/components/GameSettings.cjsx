@@ -3,7 +3,7 @@ WorldSettings = require('./WorldSettings')
 spriteManager = require('../spriteManager')
 
 React = require 'react/addons'
-_ = require('lodash') # remove
+_ = require 'lodash'
 
 GameSettings = React.createClass
 
@@ -19,34 +19,17 @@ GameSettings = React.createClass
 
 	componentWillMount: ->
 
-		###
-		socket.on 'game already exists', () ->
-			$('#error').html('Name already exists')
-
-		socket.on 'game created', (data) ->
-			# Redirect to the client page.
-			window.location.replace('../play/#' + data.id)
-
-		socket.on 'game list', (data) ->
-			idList = Object.keys(data)
-			if idList.length > 0
-				gameListRegexp = new RegExp('^(' + idList.join('|') + ')$')
-			else
-				gameListRegexp = null
-		###
-
 		@spriteManager = new spriteManager()
 
 	render: ->
 
-		bonuses = _.map @state.bonus, (quantity, name) =>
-			<BonusSettings
-				type={'bonus' + name.charAt(0).toUpperCase() + name.slice(1)}
-				quantity={quantity}
-				spriteManager={@spriteManager}
-				onChangeQuantity={_.partial @changeQuantity, name}/>
+		bonuses = (<BonusSettings
+			type={'bonus' + name.charAt(0).toUpperCase() + name.slice(1)}
+			quantity={quantity}
+			spriteManager={@spriteManager}
+			onChangeQuantity={_.partial @changeQuantity, name}/> for name, quantity of @state.bonus)
 
-		<div>
+		<div className='game-settings'>
 
 			<div id='world'>
 				<WorldSettings />

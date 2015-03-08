@@ -4,9 +4,12 @@ WorldSettings = React.createClass
 
 	render: ->
 
-		<div>
+		<div className='world-settings'>
 
-			<input type='text' placeholder='name here' />
+			Duration
+			<input type='range' />
+
+			Planet density
 			<input type='range' />
 
 		</div>

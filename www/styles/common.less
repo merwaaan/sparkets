@@ -146,35 +146,21 @@ header {
 footer {
 	.gradient-black;
 	.box-shadow(0, -2px, 3px, @darkblue);
+	.column-count(2);
 	position: absolute;
 	bottom: 0;
 	width: 100%;
-	padding-top: 1em;
-	padding-bottom: 1em;
+	padding-top: 0.3em;
+	padding-bottom: 0.3em;
 	color: @darkblue;
-	border-top: 4px solid @blue;
-	.column-count(2);
-	font-size: 90%;
-
-	div {
-		margin: auto;
-		width: 80%;
-	}
+	font-size: 0.8em;
+	border-top: 1px solid @blue;
 
 	section {
 		.column-break-before(always);
 		width: 60%;
 		padding: 1em;
 		margin: 0 auto;
-
-		h3 {
-			color: @blue;
-		}
-
-		ul {
-			list-style-position: inside;
-			list-style-type: square;
-		}
 	}
 }
 

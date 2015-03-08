@@ -38,6 +38,9 @@ module.exports = (grunt) ->
 			client:
 				options:
 					transform: ['coffee-reactify']
+					external: [
+						'lodash'
+					]
 					browserifyOptions:
 						debug: true
 						extensions: ['.coffee', '.cjsx']
