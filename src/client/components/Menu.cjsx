@@ -3,7 +3,7 @@ Customization = require './Customization'
 Scoreboard = require './Scoreboard'
 Client = require '../client'
 
-React = require 'react/addons'
+React = require 'react'
 Router = require 'react-router'
 
 Menu = React.createClass

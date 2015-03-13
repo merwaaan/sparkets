@@ -2,7 +2,7 @@ Footer = require './Footer'
 GameList = require './GameList'
 Header = require './Header'
 
-React = require 'react/addons'
+React = require 'react'
 Link = require('react-router').Link
 
 Index = React.createClass

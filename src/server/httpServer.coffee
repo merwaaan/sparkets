@@ -11,10 +11,9 @@ mime = (path) ->
 
 webFiles = {
 	'/' : '/index.html',
+	'/libs.js',
 	'/client.js',
 	'/sparkets.css',
-	'/lib/jquery-1.7.2.min.js',
-	'/lib/react.js',
 	'/favicon.ico',
 	'/img/colorWheel.png',
 	'/img/colorCursor.png',

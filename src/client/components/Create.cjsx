@@ -2,7 +2,8 @@ Footer = require './Footer'
 GameSettings = require './GameSettings'
 Header = require './Header'
 
-React = require 'react/addons'
+React = require 'react'
+$ = require 'jquery'
 
 Create = React.createClass
 

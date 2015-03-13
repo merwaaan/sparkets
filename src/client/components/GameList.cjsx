@@ -1,6 +1,6 @@
 Countdown = require './Countdown'
 
-React = require 'react/addons'
+React = require 'react'
 Router = require 'react-router'
 
 GameList = React.createClass

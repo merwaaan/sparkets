@@ -2,7 +2,7 @@ Chat = require './Chat'
 Menu = require './Menu'
 Client = require '../client'
 
-React = require 'react/addons'
+React = require 'react'
 Router = require 'react-router'
 
 Play = React.createClass

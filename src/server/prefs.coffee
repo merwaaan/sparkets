@@ -456,7 +456,7 @@ class GamePreferences
 				weight: 1
 			tracker:
 				class: BonusTracker
-				weight: 100
+				weight: 1
 			boost:
 				class: BonusBoost
 				weight: 1

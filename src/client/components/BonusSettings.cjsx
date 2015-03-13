@@ -1,7 +1,22 @@
-React = require 'react/addons'
+React = require 'react'
 _ = require('lodash') # remove lodash
 
 BonusSettings = React.createClass
+
+	propTypes:
+		size: React.PropTypes.number
+		from: React.PropTypes.number
+		to: React.PropTypes.number
+		thickness: React.PropTypes.number
+
+	getDefaultProps: ->
+		size: 200
+		from: 0.1
+		to: 0.9
+		thickness: 0.35
+
+	getInitialState: ->
+		quantity: 0.5
 
 	labels: [
 		'None' # == 0
@@ -38,9 +53,23 @@ BonusSettings = React.createClass
 		radius2 = (1 - width) * radius
 		d += "A #{radius2}, #{radius2} 0 #{big} 1 #{x0}, #{y0}"
 
-		<svg width={size} height={size}>
-			<path d={d} fill='none' stroke='black'></path>
-		</svg>
+		<path d={d} fill='grey' onClick={@pickQuantity}>
+		</path>
+
+	cursor: (quantity) ->
+
+		radius = @props.size / 2
+		a = (@props.to - quantity * (@props.to - @props.from)) * Math.PI * 2
+
+		pos =
+			x: radius + Math.sin(a) * 50
+			y: radius + Math.cos(a) * 50
+
+		<circle
+			cx={pos.x}
+			cy={pos.y}
+			r=10
+			fill='red'/>
 
 	render: ->
 
@@ -53,31 +82,50 @@ BonusSettings = React.createClass
 			<div>
 
 				<canvas ref='canvas'
-					width='100'
-					height='100'>
+					width={@props.size/4}
+					height={@props.size/4}>
 				</canvas>
 
-				{@donut 200, 0.1, 0.9, 0.35}
+				<svg width={@props.size} height={@props.size}>
+					{@donut @props.size, @props.from, @props.to, @props.thickness}
+					{@cursor @state.quantity}
+				</svg>
+
+				{@state.quantity}
 
 			</div>
-
-			<input
-				type='range'
-				value={@props.quantity}
-				min=0
-				max=1
-				step=0.05
-				onChange={() => @props.onChangeQuantity(event.target.value)} />
-
-			{label @props.quantity}
 
 		</div>
 
 	componentDidMount: ->
 
-		sprite = @props.spriteManager.get(@props.type, 50, 50, 'black')
-		ctx = @refs.canvas.getDOMNode().getContext('2d')
-		ctx.drawImage(sprite, 0, 0)
+		sprite = @props.spriteManager.get @props.type, @props.size/4, @props.size/4, 'black'
+		ctx = @refs.canvas.getDOMNode().getContext '2d'
+		ctx.drawImage sprite, 0, 0
+
+	pickQuantity: (event) ->
+
+		event.preventDefault()
+
+		radius = @props.size / 2
+		unit = Math.PI * 2
+
+		# Transform the click coordinates to a normalized quantity
+
+		to =
+			x: Math.sin(@props.to * unit) * 100
+			y: Math.cos(@props.to * unit) * 100
+
+		pos = $(event.target.parentNode).offset()
+		click =
+			x: (event.pageX - pos.left) - @props.size / 2
+			y: (event.pageY - pos.top) - @props.size / 2
+
+		angle = Math.atan2(to.y, to.x) - Math.atan2(click.y, click.x)
+		angle += unit if angle < 0
+		angle = (unit - angle) / (unit * (@props.to - @props.from))
+
+		@setState {quantity: angle}
 
 
 module.exports = BonusSettings

@@ -1,7 +1,9 @@
 Client = require '../client'
 utils = require '../../utils'
 
-React = require 'react/addons'
+React = require 'react'
+$ = require 'jquery'
+
 
 Customization = React.createClass
 

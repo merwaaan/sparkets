@@ -1,4 +1,5 @@
-React = require 'react/addons'
+React = require 'react'
+$ = require 'jquery'
 _ = require('lodash') # remove
 
 Header = React.createClass

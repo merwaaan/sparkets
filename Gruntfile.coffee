@@ -9,8 +9,22 @@ module.exports = (grunt) ->
 	grunt.loadNpmTasks 'grunt-contrib-watch'
 	grunt.loadNpmTasks 'grunt-vows'
 
+	BUILD = grunt.option('build') or 'debug'
+	DEBUG = BUILD is 'debug'
+	RELEASE = BUILD is 'release'
+
 	serverScripts = ['src/server/*.coffee', 'src/*.coffee']
 	clientScripts = ['src/client/*.coffee', 'src/client/components/*.cjsx', 'src/*.coffee']
+
+	libs = [
+		['react-addons', '0.12.2']
+		['react-router', '0.11.6']
+		['lodash', '3.4.0']
+		['jquery', '2.1.3']
+	]
+	libNames = (name + '-' + version for [name, version] in libs)
+	libPaths = ('./www/lib/' + lib + (if RELEASE then '.min' else '') + '.js' for lib in libNames)
+	console.log 'libs: ', libs, libNames, libPaths
 
 	###
 
@@ -35,17 +49,23 @@ module.exports = (grunt) ->
 				ext: '.js'
 
 		browserify:
+			options:
+				transform: ['coffee-reactify']
+				browserifyOptions:
+					debug: DEBUG
+					extensions: ['.coffee', '.cjsx']
+
 			client:
 				options:
-					transform: ['coffee-reactify']
-					external: [
-						'lodash'
-					]
-					browserifyOptions:
-						debug: true
-						extensions: ['.coffee', '.cjsx']
+					external: ['react', 'react-router', 'jquery', 'lodash']
 				files:
 					'build/www/client.js': 'src/client/components/Sparkets.cjsx'
+
+			libs:
+				options:
+					require: ['react', 'react-router', 'lodash', 'jquery']
+				src: []
+				dest: 'build/www/libs.js'
 
 		less:
 			styles:
@@ -55,12 +75,8 @@ module.exports = (grunt) ->
 		copy:
 			html:
 				expand: true
-				src: 'www/*.html'
+				src: 'www/index.html'
 				dest: 'build/'
-			lib:
-				expand: true
-				src: 'www/lib/*'
-				dest: 'build' # different version depending on build type?
 			assets:
 				expand: true
 				src: 'www/img/*'
@@ -75,7 +91,8 @@ module.exports = (grunt) ->
 		uglify:
 			client:
 				files:
-					'www/client.min.js': 'build/client.js'
+					'build/www/libs.js': 'build/www/libs.js'
+					'build/www/client.js': 'build/www/client.js'
 
 		clean:
 			all: 'build'
@@ -86,9 +103,9 @@ module.exports = (grunt) ->
 				tasks: 'server'
 			client:
 				files: clientScripts
-				tasks: 'client'
+				tasks: 'browserify:client'
 			styles:
-				files: 'www/styles/*.less'
+				files: 'www/**/*.less'
 				tasks: 'less'
 			www:
 				files: ['www/**/*', '!www/**/*.less']
@@ -97,11 +114,10 @@ module.exports = (grunt) ->
 
 	grunt.registerTask 'default', ['clean', 'all', 'watch']
 
-	grunt.registerTask 'all', ['server', 'client', 'www']
 	grunt.registerTask 'server', ['coffee:server']
-	grunt.registerTask 'client', ['browserify:client']
+	grunt.registerTask 'client', ['browserify:libs', 'browserify:client']
 	grunt.registerTask 'www', ['less', 'copy']
 
-	grunt.registerTask 'release', ['all', 'uglify']
+	grunt.registerTask 'all', ['server', 'client', 'www'].concat if RELEASE then ['uglify'] else []
 
-	grunt.registerTask 'test', ['vows:all']
+	grunt.registerTask 'test', ['vows']

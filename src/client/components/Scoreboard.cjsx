@@ -1,6 +1,6 @@
 Ship = require('../ship')
 
-React = require 'react/addons'
+React = require 'react'
 
 Scoreboard = React.createClass
 

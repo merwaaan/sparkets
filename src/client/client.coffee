@@ -12,6 +12,8 @@ Ship = require './ship'
 SpriteManager = require './spriteManager'
 Tracker = require './tracker'
 
+$ = require 'jquery'
+
 class Client
 
 	constructor: (@gameId) ->

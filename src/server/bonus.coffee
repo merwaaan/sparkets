@@ -3,6 +3,7 @@ ChangingObject = require('./changingObject').ChangingObject
 stateMachineMixin = require('./stateMachine').mixin
 Rope = require('./rope').Rope
 
+
 class Bonus extends ChangingObject
 
 	stateMachineMixin.call(@prototype)

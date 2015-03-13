@@ -1,5 +1,8 @@
 utils = require('../utils')
 
+$ = require 'jquery'
+
+
 class Range
 	constructor: (@container, @name, @min, @max, @step, @default, @suffix = '') ->
 

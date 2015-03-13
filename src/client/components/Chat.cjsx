@@ -2,7 +2,7 @@ Client = require '../client'
 Ship = require '../ship'
 utils = require '../../utils'
 
-React = require 'react/addons'
+React = require 'react'
 
 Chat = React.createClass
 
@@ -87,17 +87,6 @@ Chat = React.createClass
 			messages.pop()
 
 		@setState {messages: messages}
-
-		###
-		# Append the message to the chat.
-		line = $('<div style="display:none">' + message + '</div>').appendTo(@chat)
-		line.fadeIn(300)
-
-		# Program its disappearance.
-		setTimeout( (() =>
-			line.animate({opacity: 'hide', height: 'toggle'}, 300, () -> line.detach())),
-			@displayDuration)
-		###
 
 
 Message = React.createClass

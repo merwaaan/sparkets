@@ -1,3 +1,6 @@
+$ = require 'jquery'
+
+
 class Tutorial
 	constructor: () ->
 

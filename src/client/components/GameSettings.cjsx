@@ -2,7 +2,7 @@ BonusSettings = require('./BonusSettings')
 WorldSettings = require('./WorldSettings')
 spriteManager = require('../spriteManager')
 
-React = require 'react/addons'
+React = require 'react'
 _ = require 'lodash'
 
 GameSettings = React.createClass
@@ -24,6 +24,7 @@ GameSettings = React.createClass
 	render: ->
 
 		bonuses = (<BonusSettings
+			key={name}
 			type={'bonus' + name.charAt(0).toUpperCase() + name.slice(1)}
 			quantity={quantity}
 			spriteManager={@spriteManager}
@@ -31,15 +32,12 @@ GameSettings = React.createClass
 
 		<div className='game-settings'>
 
-			<div id='world'>
+			<div className='world'>
 				<WorldSettings />
 			</div>
 
-			<div id='bonus'>
+			<div className='bonuses'>
 				{bonuses}
-			</div>
-
-			<div id='misc'>
 			</div>
 
 		</div>

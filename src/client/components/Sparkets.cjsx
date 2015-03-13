@@ -2,7 +2,7 @@ Create = require './Create'
 Index = require './Index'
 Play = require './Play'
 
-React = require 'react/addons'
+React = require 'react'
 Router = require 'react-router'
 
 Sparkets = React.createClass

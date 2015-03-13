@@ -1,3 +1,5 @@
+$ = require 'jquery'
+
 class SelectionBox
 	constructor: (@container, @name, @items, @default) ->
 
