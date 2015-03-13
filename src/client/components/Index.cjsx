@@ -7,25 +7,25 @@ Link = require('react-router').Link
 
 Index = React.createClass
 
-	propTypes:
-		socket: React.PropTypes.object.isRequired
+  propTypes:
+    socket: React.PropTypes.object.isRequired
 
-	render: ->
+  render: ->
 
-		<div>
+    <div>
 
-			<Header animated=true />
+      <Header animated=true />
 
-			<GameList {...@props} />
+      <GameList {...@props} />
 
-			<Link to='create'>
-				<button className="create-game">
-					Create a new Game
-				</button>
-			</Link>
+      <Link to='create'>
+        <button className="create-game">
+          Create a new Game
+        </button>
+      </Link>
 
-			<Footer />
+      <Footer />
 
-		</div>
+    </div>
 
 module.exports = Index

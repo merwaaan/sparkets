@@ -7,23 +7,23 @@ Router = require 'react-router'
 
 Play = React.createClass
 
-	mixins: [Router.State]
+  mixins: [Router.State]
 
-	render: ->
-		<div>
-			<canvas ref='canvas' id='canvas'></canvas>
-			<Menu client={@client} />
-			<Chat ref='chat' client={@client} />
-		</div>
+  render: ->
+    <div>
+      <canvas ref='canvas' id='canvas'></canvas>
+      <Menu client={@client} />
+      <Chat ref='chat' client={@client} />
+    </div>
 
-	componentWillMount: ->
-		@client = new Client @getParams().gameId
+  componentWillMount: ->
+    @client = new Client @getParams().gameId
 
-	componentDidMount: ->
-		@client.bindCanvas @refs.canvas.getDOMNode()
+  componentDidMount: ->
+    @client.bindCanvas @refs.canvas.getDOMNode()
 
-	componentWillUnmount: ->
-		#
+  componentWillUnmount: ->
+    #
 
 
 module.exports = Play

@@ -1,52 +1,52 @@
 @import "common.less";
 
 table.game-list {
-	width: 70%;
-	margin: auto;
-	margin-top: 2em;
-	border: 1px solid lightgrey;
-	border-collapse: collapse;
+  width: 70%;
+  margin: auto;
+  margin-top: 2em;
+  border: 1px solid lightgrey;
+  border-collapse: collapse;
 
-	th {
-		.gradient-black;
-		padding: 0.3em;
-		color: @blue;
-		border-bottom: 2px solid @blue;
-		text-align: left;
-		font-weight: bold;
-	}
+  th {
+    .gradient-black;
+    padding: 0.3em;
+    color: @blue;
+    border-bottom: 2px solid @blue;
+    text-align: left;
+    font-weight: bold;
+  }
 
-	tr {
+  tr {
 
-		&:nth-child(even) {
-			background-color: hsl(0, 0%, 95%);
-		}
+    &:nth-child(even) {
+      background-color: hsl(0, 0%, 95%);
+    }
 
-		&:nth-child(odd) {
-			background-color: hsl(0, 0%, 90%);
-		}
-	}
+    &:nth-child(odd) {
+      background-color: hsl(0, 0%, 90%);
+    }
+  }
 
-	td {
-		padding: 0.3em;
-	}
+  td {
+    padding: 0.3em;
+  }
 
-	a {
-		text-decoration: none;
-		color: hsl(-150, 60%, 45%);
-	}
+  a {
+    text-decoration: none;
+    color: hsl(-150, 60%, 45%);
+  }
 }
 
 button.create-game {
-	.gradient-black;
-	.button-behavior;
-	.box-shadow(0, 1px, 3px, @darkblue);
-	display: block;
-	width: 14em;
-	padding: .2em .5em;
-	margin: 2em auto;
-	color: white;
-	font-size: 14pt;
-	border: 1px solid @blue;
-	border-radius: 3px;
+  .gradient-black;
+  .button-behavior;
+  .box-shadow(0, 1px, 3px, @darkblue);
+  display: block;
+  width: 14em;
+  padding: .2em .5em;
+  margin: 2em auto;
+  color: white;
+  font-size: 14pt;
+  border: 1px solid @blue;
+  border-radius: 3px;
 }

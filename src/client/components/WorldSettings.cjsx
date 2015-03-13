@@ -2,17 +2,17 @@ React = require 'react'
 
 WorldSettings = React.createClass
 
-	render: ->
+  render: ->
 
-		<div className='world-settings'>
+    <div className='world-settings'>
 
-			Duration
-			<input type='range' />
+      Duration
+      <input type='range' />
 
-			Planet density
-			<input type='range' />
+      Planet density
+      <input type='range' />
 
-		</div>
+    </div>
 
 
 module.exports = WorldSettings

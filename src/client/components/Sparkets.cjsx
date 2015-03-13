@@ -7,18 +7,18 @@ Router = require 'react-router'
 
 Sparkets = React.createClass
 
-	render: ->
-		<Router.RouteHandler socket={@socket}/>
+  render: ->
+    <Router.RouteHandler socket={@socket}/>
 
-	componentWillMount: ->
+  componentWillMount: ->
 
-		@socket = io.connect()
+    @socket = io.connect()
 
-		@socket.on 'connect', () =>
-			console.log 'Connected to global server'
+    @socket.on 'connect', () =>
+      console.log 'Connected to global server'
 
-		@socket.on 'disconnect', () =>
-			console.log 'Disconnected from global server'
+    @socket.on 'disconnect', () =>
+      console.log 'Disconnected from global server'
 
 
 module.exports = Sparkets
@@ -30,11 +30,11 @@ Route = Router.Route
 DefaultRoute = Router.DefaultRoute
 
 routes = (<Route path='/' handler={Sparkets}>
-	<DefaultRoute handler={Index} />
-	<Route name='create' handler={Create} />
-	<Route name='play' path='play/:gameId' handler={Play} />
+  <DefaultRoute handler={Index} />
+  <Route name='create' handler={Create} />
+  <Route name='play' path='play/:gameId' handler={Play} />
 </Route>)
 
 window.addEventListener 'load', () ->
-	Router.run routes, (Handler) ->
-		React.render <Handler />, document.body
+  Router.run routes, (Handler) ->
+    React.render <Handler />, document.body
