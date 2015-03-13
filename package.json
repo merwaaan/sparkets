@@ -20,10 +20,12 @@
   },
   "dependencies": {
     "coffee-script": "1.x",
-    "socket.io": "1.2.x",
+    "ws": "0.x",
     "webrepl": "0.4.x"
   },
   "devDependencies": {
+    "browserify": "^9.0.3",
+    "browserify-shim": "^3.8.3",
     "coffee-reactify": "^2.4.1",
     "grunt": "^0.4.5",
     "grunt-browserify": "^3.5.0",
@@ -35,24 +37,34 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-vows": "^0.4.2",
     "lodash": "^3.3.1",
-    "vows": "0.6.x"
+    "vows": "0.8.x"
   },
   "engines": {
     "node": "0.6.x"
   },
   "browser": {
     "react": "./www/lib/react-addons-0.12.2.js",
-    "react-router" : "./www/lib/react-router-0.11.6.js",
+    "react-router": "./www/lib/react-router-0.11.6.js",
     "jquery": "./www/lib/jquery-2.1.3.js",
     "lodash": "./www/lib/lodash-3.4.0.js"
   },
   "browserify-shim": {
     "react": "React",
-    "react-router": {"depends": ["react"]},
-    "jquery": {"exports": "$"},
-    "lodash": {"exports": "_"}
+    "react-router": {
+      "depends": [
+        "react"
+      ]
+    },
+    "jquery": {
+      "exports": "$"
+    },
+    "lodash": {
+      "exports": "_"
+    }
   },
   "browserify": {
-    "transform": ["browserify-shim"]
+    "transform": [
+      "browserify-shim"
+    ]
   }
 }

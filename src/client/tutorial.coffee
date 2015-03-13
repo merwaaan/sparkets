@@ -2,6 +2,7 @@ $ = require 'jquery'
 
 
 class Tutorial
+
   constructor: () ->
 
     @startDelay = 2000
@@ -31,7 +32,6 @@ class Tutorial
     else
       localStorage['sparkets.tutorial'] = true
 
-
   pause: () ->
     setTimeout((() => @fadeOut()), @expositionDuration)
 
@@ -39,5 +39,6 @@ class Tutorial
     # Fade-out the current slide.
     $('#slide' + @current).fadeOut(@fadeDuration, () => @fadeIn())
     ++@current
+
 
 module.exports = Tutorial

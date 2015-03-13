@@ -1,7 +1,7 @@
-boxedMixin = require('./boxed')
-BoostEffect = require('./boostEffect')
-FlashEffect = require('./flashEffect')
-TrailEffect = require('./trailEffect')
+boxedMixin = require './boxed'
+BoostEffect = require './boostEffect'
+FlashEffect = require './flashEffect'
+TrailEffect = require './trailEffect'
 
 class Tracker
 
@@ -44,5 +44,6 @@ class Tracker
 
   boostEffect: () ->
     @client.effects.push new BoostEffect(@client, @, 3, 600)
+
 
 module.exports = Tracker

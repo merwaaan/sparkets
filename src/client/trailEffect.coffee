@@ -1,4 +1,5 @@
 class TrailEffect
+
   constructor: (@client, @object, @dispersion = 0.5, @life = 30, @size = 5) ->
     @particles = []
 
@@ -45,5 +46,6 @@ class TrailEffect
       ctxt.restore()
 
     true
+
 
 module.exports = TrailEffect

@@ -50,9 +50,10 @@ Menu = React.createClass
 
     # Render on connection, to bind server data to
     # the countdown and the customization panel
-    @props.client.socket.on 'connected', () =>
-      @forceUpdate()
-      # XXX not working because of wrong callback order
+    message.send @props.client.socket,message.PREFERENCES_CHANGED, {
+      color: color
+      name: name
+    }
 
   open: () ->
     @setState {opened: true}
@@ -62,45 +63,3 @@ Menu = React.createClass
 
 
 module.exports = Menu
-
-
-###
-
-  open: () ->
-    @updateScores()
-
-    @updateTime()
-    @clockInterval = setInterval( (() =>
-      @updateTime()), 1000)
-
-    # Make the cursor constantly visible when
-    # the menu is open.
-    @client.staticCursorMode()
-
-    @menu.removeClass('hidden')
-    @menu.addClass('visible')
-
-  close: () ->
-    @menu.removeClass('visible')
-    @menu.addClass('hidden')
-
-    clearInterval(@clockInterval)
-
-    # The cursor disappears after some time
-    # when the menu is closed.
-    @client.disappearingCursorMode()
-
-  isOpen: () ->
-    @menu.hasClass('visible')
-
-
-  updatePreview: (color) ->
-    # Change the color of the ship preview.
-    style = @shipPreview.attr('style')
-
-    style = style.replace(/stroke: [^\n]+/,
-      'stroke: hsl('+color[0]+','+color[1]+'%,'+color[2]+'%);')
-
-    @shipPreview.attr('style', style)
-
-###

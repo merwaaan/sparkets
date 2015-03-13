@@ -217,7 +217,7 @@ exports.handle = (obj1, obj2) ->
 exports.collisions =
   'ship-bonus': (ship, bonus) ->
     if bonus.state is 'available'
-        ship.holdBonus(bonus)
+      ship.holdBonus(bonus)
       ship.addStat("#{bonus.type} bonus grabs", 1)
 
       ddebug "ship ##{ship.id} picked up #{bonus.bonusType} bonus ##{bonus.id}"

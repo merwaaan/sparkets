@@ -7,7 +7,7 @@ class BonusTracker
 
   use: () ->
     @game.newGameObject (id) =>
-      dropPos = {x: @bonus.pos.x,  y: @bonus.pos.y}
+      dropPos = {x: @bonus.pos.x, y: @bonus.pos.y}
       @game.trackers[id] = new Tracker(id, @game, @bonus.holder, @bonus.holder.target(), dropPos)
 
     # Clean up.

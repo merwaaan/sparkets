@@ -2,6 +2,7 @@ Create = require './Create'
 Index = require './Index'
 Play = require './Play'
 
+ws = require 'ws'
 React = require 'react'
 Router = require 'react-router'
 
@@ -12,13 +13,15 @@ Sparkets = React.createClass
 
   componentWillMount: ->
 
-    @socket = io.connect()
+    # Connect to server and set callbacks.
+    # FIXME: websocket port number is hardcoded
+    @socket = new WebSocket('ws:' + window.location.hostname + ':12346')
 
-    @socket.on 'connect', () =>
-      console.log 'Connected to global server'
+    @socket.addEventListener 'open', () =>
+      console.info "Connected to server."
 
-    @socket.on 'disconnect', () =>
-      console.log 'Disconnected from global server'
+    @socket.addEventListener 'close', () =>
+      console.log 'Disconnected from server'
 
 
 module.exports = Sparkets

@@ -73,4 +73,5 @@ class BonusBox
     # Change label.
     @label.html(@state)
 
+
 module.exports = BonusBox

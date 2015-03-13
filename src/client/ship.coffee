@@ -109,7 +109,7 @@ class Ship
       ctxt.restore()
 
     # Draw the player's name.
-    if   @name?  and @ isnt @client.localShip and
+    if  @name?  and @ isnt @client.localShip and
         (@client.displayNames or @client.localShip.state is 'dead')
       ctxt.fillStyle = '#666'
       ctxt.font = '15px sans'
@@ -210,5 +210,6 @@ class Ship
     # Immobile flash effect.
     staticPos = {x: @pos.x, y: @pos.y}
     @client.effects.push new FlashEffect(@client, staticPos, 300, @color, 600)
+
 
 module.exports = Ship

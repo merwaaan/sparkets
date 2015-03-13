@@ -1,4 +1,4 @@
-utils = require('../utils')
+utils = require '../utils'
 
 class SpriteManager
 
@@ -328,5 +328,6 @@ class SpriteManager
       ctxt.restore()
 
       return sprite
+
 
 module.exports = SpriteManager

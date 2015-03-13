@@ -1,5 +1,5 @@
 boxedMixin = require './boxed'
-FlashEffect = require('./flashEffect')
+FlashEffect = require './flashEffect'
 
 class Mine
 
@@ -47,5 +47,6 @@ class Mine
 
   explosionEffect: () ->
     @client.effects.push new FlashEffect(@client, @pos, 80, @color, 500)
+
 
 module.exports = Mine

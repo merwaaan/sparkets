@@ -16,11 +16,12 @@ $ = require 'jquery'
 
 class Client
 
-  constructor: (@gameId) ->
+  constructor: () ->
 
     # Server
     @socket = null
 
+    # Graphics
     @spriteManager = new SpriteManager()
 
     # Time
@@ -49,45 +50,42 @@ class Client
     @showMapBounds = no
     @showFPS = no
 
-    # Connect to server and set callbacks.
-    #@socket = io('/' + location.hash.substring(1))
-    @socket = io('/' + @gameId)
-
     # Setup a connexion timeout to redirect to homepage in case of
     # nonexistent games.
+    ###
     @connectionTimeout = setTimeout( ( () ->
-      url = 'http://' + location.hostname + ':' + location.port
-      location.replace(url)), 15000)
+      url = 'http://' + window.location.hostname + ':' + window.location.port
+      window.location.replace(url)), 1500)
+    ###
 
-    # Bind socket events.
-    @socket.on 'connect', () =>
-      @onConnect()
+    @socket.addEventListener 'message', (raw) =>
+      msg = message.decode(raw.data)
 
-      @socket.on 'connected', (data) =>
-        @onConnected(data)
+      switch msg.type
+        when message.CONNECTED
+          @onConnected msg.content
 
-      @socket.on 'objects update', (data) =>
-        @onObjectsUpdate(data)
+        when message.OBJECTS_UPDATE
+          @onObjectsUpdate msg.content
 
-      @socket.on 'ship created', (data) =>
-        @onShipCreated(data)
+        when message.SHIP_CREATED
+          @onShipCreated msg.content
 
-      @socket.on 'player quits', (data) =>
-        @onPlayerQuits(data)
+        when message.PLAYER_SAYS
+          @onPlayerMessage msg.content
 
-      @socket.on 'game end', (data) =>
-        @onGameEnd(data)
+        when message.PLAYER_QUITS
+          @onPlayerQuits msg.content
 
-      @socket.on 'disconnect', (data) =>
-        @onDisconnect(data)
+        when message.GAME_END
+          @onGameEnd msg.content
 
     @disappearingCursorMode()
     @hideCursor()
 
-  bindCanvas: ->
+  bindCanvas: (canvas) ->
 
-    @canvas = canvas
-    @ctx = @canvas.getContext('2d')
+    @ctxt = document.getElementById('canvas').getContext('2d')
     @canvasSize = {w: 0, h: 0}
     @mapSize = null
     @view = {x: 0, y: 0}
@@ -99,8 +97,8 @@ class Client
     # surrounding the canvas first, then the canvas will shrink
     # while keeping its aspect ratio.
     $(window).resize (event) =>
-      canvasWidth = Math.min(innerWidth, 960)
-      canvasHeight = Math.min(innerHeight, 600)
+      canvasWidth = Math.min(window.innerWidth, 960)
+      canvasHeight = Math.min(window.innerHeight, 600)
 
       # Keep aspect ratio
       ratio = canvasWidth / canvasHeight
@@ -115,13 +113,13 @@ class Client
       @canvasSize.h = document.getElementById('canvas').height = canvasHeight
 
       # Center canvas horizontally if there is enough space
-      horizSpace = Math.max(innerWidth - canvasWidth, 0)
+      horizSpace = Math.max(window.innerWidth - canvasWidth, 0)
       $('#canvas').css
         'margin-left': horizSpace/2
         'margin-right': horizSpace/2
 
       # Add top margin if there is enough space
-      vertSpace = Math.max(innerHeight - canvasHeight, 0)
+      vertSpace = Math.max(window.innerHeight - canvasHeight, 0)
       $('#canvas').css('margin-top': vertSpace/3)
 
     # Manually trigger a resize event to set everything in place
@@ -161,9 +159,9 @@ class Client
   go: () ->
 
     # Show the menu the first time.
-    if not localStorage['sparkets.tutorial']?
-      #@menu.open()
-      localStorage['sparkets.tutorial'] = true
+    if not window.localStorage['sparkets.tutorial']?
+      @menu.open()
+      window.localStorage['sparkets.tutorial'] = true
 
     # Use the game event handler.
     @setInputHandlers()
@@ -180,26 +178,24 @@ class Client
 
       if not @keys[event.keyCode]? or @keys[event.keyCode] is off
         @keys[event.keyCode] = on
-        @socket.emit 'key down',
-          key: event.keyCode
+        message.send(@socket, message.KEY_DOWN, event.keyCode)
 
     $(document).keyup ({keyCode}) =>
       return unless keyCode in processedKeys
 
       @keys[keyCode] = off
-      @socket.emit 'key up',
-        key: keyCode
+      message.send(@socket, message.KEY_UP, keyCode)
 
   renderLoop: (showFPS) ->
 
     # RequestAnimationFrame API
     # http://paulirish.com/2011/requestanimationframe-for-smart-animating/
     requestAnimFrame = ( () =>
-      requestAnimationFrame       or
-      webkitRequestAnimationFrame or
-      mozRequestAnimationFrame    or
-      oRequestAnimationFrame      or
-      msRequestAnimationFrame     or
+      window.requestAnimationFrame       or
+      window.webkitRequestAnimationFrame or
+      window.mozRequestAnimationFrame    or
+      window.oRequestAnimationFrame      or
+      window.msRequestAnimationFrame     or
       (callback, element) -> setTimeout(callback, 1000 / 60) )()
 
     currentFPS = 0
@@ -254,7 +250,7 @@ class Client
     @effects = effects
 
     # Draw scene.
-    @redraw(@ctx)
+    @redraw(@ctxt)
 
   boxInView: (x, y, r) ->
     @inView(x-r, y-r) or
@@ -268,72 +264,72 @@ class Client
 
   # Clear canvas and draw everything.
   # Not efficient, but we don't have that many objects.
-  redraw: (ctx) ->
-    ctx.clearRect(0, 0, @canvasSize.w, @canvasSize.h)
+  redraw: (ctxt) ->
+    ctxt.clearRect(0, 0, @canvasSize.w, @canvasSize.h)
 
     # Draw everything centered around the player when he's alive.
     unless @localShip.state in ['dead', 'ready']
       @centerView(@localShip)
 
-    ctx.save()
-    ctx.translate(-@view.x, -@view.y)
+    ctxt.save()
+    ctxt.translate(-@view.x, -@view.y)
 
-    @drawMapBounds(ctx) if @showMapBounds
+    @drawMapBounds(ctxt) if @showMapBounds
 
     # Draw all objects.
     for idx, obj of @gameObjects
-      @drawObject(ctx, obj) if obj.inView()
+      @drawObject(ctxt, obj) if obj.inView()
 
     # Draw all visual effects.
     for e in @effects
-      e.draw(ctx) if e.inView()
+      e.draw(ctxt) if e.inView()
 
     # Draw outside of the map bounds.
-    @drawInfinity ctx
+    @drawInfinity ctxt
 
     # View translation doesn't apply to UI.
-    ctx.restore()
+    ctxt.restore()
 
     # Draw UI
-    @drawRadar(ctx) if @localShip? and @localShip.state is 'alive'
+    @drawRadar(ctxt) if @localShip? and @localShip.state is 'alive'
 
-  drawObject: (ctx, obj, offset) ->
-    ctx.save()
-    obj.draw(ctx, offset)
-    ctx.restore()
+  drawObject: (ctxt, obj, offset) ->
+    ctxt.save()
+    obj.draw(ctxt, offset)
+    ctxt.restore()
     if @showHitBoxes
-      ctx.save()
-      obj.drawBoundingBox(ctx)
-      obj.drawHitbox(ctx)
-      ctx.restore()
+      ctxt.save()
+      obj.drawBoundingBox(ctxt)
+      obj.drawHitbox(ctxt)
+      ctxt.restore()
 
-  drawMapBounds: (ctx) ->
-    ctx.save()
-    ctx.lineWidth = 2
-    ctx.strokeStyle = '#dae'
-    ctx.strokeRect(0, 0, @mapSize, @mapSize)
-    ctx.restore()
+  drawMapBounds: (ctxt) ->
+    ctxt.save()
+    ctxt.lineWidth = 2
+    ctxt.strokeStyle = '#dae'
+    ctxt.strokeRect(0, 0, @mapSize, @mapSize)
+    ctxt.restore()
 
   centerView: (obj) ->
     @view.x = obj.pos.x - @canvasSize.w/2
     @view.y = obj.pos.y - @canvasSize.h/2
 
-  drawRadar: (ctx) ->
+  drawRadar: (ctxt) ->
     for id, ship of @ships
       unless id is @shipId or ship.state in ['dead', 'ready']
-        ctx.save()
-        ship.drawOnRadar(ctx)
-        ctx.restore()
+        ctxt.save()
+        ship.drawOnRadar(ctxt)
+        ctxt.restore()
 
     for id, bonus of @bonuses
       if bonus.state isnt 'dead'
-        ctx.save()
-        bonus.drawOnRadar(ctx)
-        ctx.restore()
+        ctxt.save()
+        bonus.drawOnRadar(ctxt)
+        ctxt.restore()
 
     true
 
-  drawInfinity: (ctx) ->
+  drawInfinity: (ctxt) ->
 
     # Can the player see the left, right, top and bottom voids?
     left = @view.x < 0
@@ -342,7 +338,7 @@ class Client
     bottom = @view.y > @mapSize - @canvasSize.h
 
     visibility = [[left and top,    top,    right and top]
-                  [left,             off,  right],
+                  [left,            off,  right],
                   [left and bottom, bottom, right and bottom]]
 
     for i in [0..2]
@@ -353,19 +349,19 @@ class Client
             x: (j-1)*@mapSize
             y: (i-1)*@mapSize
 
-          ctx.save()
-          ctx.translate(offset.x, offset.y)
+          ctxt.save()
+          ctxt.translate(offset.x, offset.y)
 
           # Draw all visible objects in it.
           for id, obj of @gameObjects
-            @drawObject(ctx, obj, offset) if obj.inView(offset)
+            @drawObject(ctxt, obj, offset) if obj.inView(offset)
 
           # Draw all visible effects
           for e in @effects
-            e.draw(ctx, offset) if e.inView(offset)
+            e.draw(ctxt, offset) if e.inView(offset)
 
           # Quadrant is done drawing.
-          ctx.restore()
+          ctxt.restore()
 
     return true
 
@@ -418,13 +414,6 @@ class Client
 
     return bestPos
 
-  onConnect: () ->
-    console.info "Connected to game server."
-    clearTimeout(@connectionTimeout)
-
-  onDisconnect: () ->
-    console.info "Disconnected from game server"
-
   # When receiving our id from the server.
   onConnected: (data) ->
     @gameStartTime = data.startTime
@@ -438,17 +427,17 @@ class Client
 
     @serverPrefs = data.serverPrefs
 
-    #@menu.sendPreferences()
+    @menu.sendPreferences()
 
-    @socket.emit 'create ship'
+    message.send(@socket, message.CREATE_SHIP)
 
-  onShipCreated: (data) ->
-    @shipId = data.shipId
+  onShipCreated: (shipId) ->
+    @shipId = shipId
     @localShip = @gameObjects[@shipId]
 
     # Set the color of the ship preview in menu to our ship color.
-    #@menu.currentColor = @localShip.color
-    #@menu.updatePreview(@localShip.color)
+    @menu.currentColor = @localShip.color
+    @menu.updatePreview(@localShip.color)
 
     @go()
 
@@ -467,6 +456,8 @@ class Client
 
   handleEvent: (event) ->
     switch event.type
+      when 'message'
+        @chat.display(event)
 
       when 'ship crashed'
         @gameObjects[event.id].explosionEffect()
@@ -518,12 +509,17 @@ class Client
       when 'EMP exploded'
         @gameObjects[event.id].wavesEffect()
 
+  # When a player sent a chat message.
+  onPlayerMessage: (data)->
+    @chat.display(data)
+
   # When another player leaves.
   onPlayerQuits: (data) ->
 
 
   onGameEnd: () ->
     @gameEnded = yes
-    #@menu.open()
+    @menu.open()
+
 
 module.exports = Client

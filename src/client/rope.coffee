@@ -1,5 +1,5 @@
-boxedMixin = require('./boxed')
-DislocateEffect = require('./dislocateEffect')
+boxedMixin = require './boxed'
+DislocateEffect = require './dislocateEffect'
 
 class Rope
 
@@ -125,5 +125,6 @@ class Rope
         size: utils.distance(@clientChain[i].x, @clientChain[i].y, @clientChain[i+1].x, @clientChain[i+1].y)
 
     @client.effects.push new DislocateEffect(@client, edges, @color, 1000)
+
 
 module.exports = Rope

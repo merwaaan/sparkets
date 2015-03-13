@@ -75,8 +75,7 @@ Chat = React.createClass
 
   send: (message) ->
     if message.length > 0
-      @props.client.socket.emit 'player says',
-        message: message
+      message.send @props.client.socket, message.CHAT_MESSAGE, message
 
   onPlayerSays: (data) ->
 
