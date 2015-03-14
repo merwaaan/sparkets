@@ -1,5 +1,6 @@
 React = require 'react'
-_ = require('lodash') # remove lodash
+_ = require 'lodash'
+$ = require 'jquery'
 
 BonusSettings = React.createClass
 
