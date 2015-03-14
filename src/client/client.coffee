@@ -12,6 +12,9 @@ Ship = require './ship'
 SpriteManager = require './spriteManager'
 Tracker = require './tracker'
 
+Message = require '../message'
+
+PubSub = require 'pubsub-js'
 $ = require 'jquery'
 
 class Client
@@ -58,27 +61,18 @@ class Client
       window.location.replace(url)), 1500)
     ###
 
-    @socket.addEventListener 'message', (raw) =>
-      msg = message.decode(raw.data)
+    # Setup message handling
+    callbacks = {}
+    callbacks[Message.CONNECTED] = @onConnected
+    callbacks[Message.OBJECTS_UPDATE] = @onObjectsUpdate
+    callbacks[Message.SHIP_CREATED] = @onShipCreated
+    callbacks[Message.PLAYER_SAYS] = @onPlayerMessage
+    callbacks[Message.PLAYER_QUITS] = @onPlayerQuits
+    callbacks[Message.GAME_END] = @onGameEnd
 
-      switch msg.type
-        when message.CONNECTED
-          @onConnected msg.content
+    PubSub.subscribe type, callback for type, callback of callbacks
 
-        when message.OBJECTS_UPDATE
-          @onObjectsUpdate msg.content
-
-        when message.SHIP_CREATED
-          @onShipCreated msg.content
-
-        when message.PLAYER_SAYS
-          @onPlayerMessage msg.content
-
-        when message.PLAYER_QUITS
-          @onPlayerQuits msg.content
-
-        when message.GAME_END
-          @onGameEnd msg.content
+    # ???
 
     @disappearingCursorMode()
     @hideCursor()

@@ -1,19 +1,21 @@
 Create = require './Create'
 Index = require './Index'
 Play = require './Play'
+Message = require '../../message'
 
-ws = require 'ws'
+WebSocket = require 'ws'
+PubSub = require 'pubsub-js'
 React = require 'react'
 Router = require 'react-router'
 
 Sparkets = React.createClass
 
   render: ->
-    <Router.RouteHandler socket={@socket}/>
+    <Router.RouteHandler/>
 
   componentWillMount: ->
 
-    # Connect to server and set callbacks.
+    # Connect to server
     # FIXME: websocket port number is hardcoded
     @socket = new WebSocket('ws:' + window.location.hostname + ':12346')
 
@@ -21,7 +23,16 @@ Sparkets = React.createClass
       console.info "Connected to server."
 
     @socket.addEventListener 'close', () =>
-      console.log 'Disconnected from server'
+      console.info 'Disconnected from server'
+
+    # Received messages are published to any subscribed component
+    @socket.addEventListener 'message', (raw) =>
+       msg = Message.decode(raw.data)
+       PubSub.publish msg.type, msg.content
+
+    # Components can publish messages to be sent to the server
+    PubSub.subscribe 'send', (message, data) =>
+      Message.send @socket, data.type, data.content
 
 
 module.exports = Sparkets

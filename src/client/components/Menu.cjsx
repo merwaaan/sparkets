@@ -3,6 +3,7 @@ Customization = require './Customization'
 Scoreboard = require './Scoreboard'
 Client = require '../client'
 
+PubSub = require 'pubsub-js'
 React = require 'react'
 Router = require 'react-router'
 
@@ -47,13 +48,6 @@ Menu = React.createClass
       if event.keyCode is 9
         event.preventDefault()
         if not @state.opened then @open() else @close()
-
-    # Render on connection, to bind server data to
-    # the countdown and the customization panel
-    message.send @props.client.socket,message.PREFERENCES_CHANGED, {
-      color: color
-      name: name
-    }
 
   open: () ->
     @setState {opened: true}

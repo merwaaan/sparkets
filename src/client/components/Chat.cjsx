@@ -1,7 +1,9 @@
 Client = require '../client'
 Ship = require '../ship'
+Message = require '../../message'
 utils = require '../../utils'
 
+PubSub = require 'pubsub-js'
 React = require 'react'
 
 Chat = React.createClass
@@ -21,7 +23,7 @@ Chat = React.createClass
 
     inputStyle = {visibility: if @state.opened then 'visible' else 'hidden'}
 
-    messages = <Message
+    messages = <ChatMessage
       data={data}
       ship={@props.client.ships[data.shipId]} /> for data in @state.messages
 
@@ -41,8 +43,8 @@ Chat = React.createClass
 
     @input = @refs.input.getDOMNode()
 
-    # Server events
-    @props.client.socket.on 'player says', @onPlayerSays
+    # Handle new messages
+    PubSub.subscribe Message.PLAYER_SAYS, @onPlayerSays
 
     # Keyboard events
     document.addEventListener 'keyup', ({keyCode}) =>
@@ -75,7 +77,7 @@ Chat = React.createClass
 
   send: (message) ->
     if message.length > 0
-      message.send @props.client.socket, message.CHAT_MESSAGE, message
+      PubSub.publish 'send', {type: Message.CHAT_MESSAGE, content: message}
 
   onPlayerSays: (data) ->
 
@@ -88,7 +90,7 @@ Chat = React.createClass
     @setState {messages: messages}
 
 
-Message = React.createClass
+ChatMessage = React.createClass
 
   propTypes:
     ship: React.PropTypes.instanceOf(Ship).isRequired

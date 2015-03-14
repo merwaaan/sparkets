@@ -1,6 +1,8 @@
 Client = require '../client'
+Message = require '../../message'
 utils = require '../../utils'
 
+PubSub = require 'pubsub-js'
 React = require 'react'
 $ = require 'jquery'
 
@@ -148,9 +150,11 @@ Customization = React.createClass
     color = @state.color
     name = @state.name if @state.name.length > 0
 
-    @props.client.socket.emit 'prefs changed',
-      color: color
-      name: name
+    PubSub.publish 'send',
+      type: Message.PREFERENCES_CHANGED
+      content:
+        color: color
+        name: name
 
   # Store user preferences in the browser local storage
   saveLocalPreferences: ->
