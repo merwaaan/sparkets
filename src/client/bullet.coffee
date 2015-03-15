@@ -3,7 +3,7 @@ ExplosionEffect = require './explosionEffect'
 
 class Bullet
 
-  boxedMixin.call(@prot type)
+  boxedMixin.call @prototype
 
   onstructor: (@client, bullet) ->
     @clientPoints = []

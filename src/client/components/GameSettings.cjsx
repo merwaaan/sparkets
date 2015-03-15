@@ -1,6 +1,6 @@
-BonusSettings = require('./BonusSettings')
-WorldSettings = require('./WorldSettings')
-spriteManager = require('../spriteManager')
+BonusSettings = require './BonusSettings'
+DurationSettings = require './DurationSettings'
+spriteManager = require '../spriteManager'
 
 React = require 'react'
 _ = require 'lodash'
@@ -8,7 +8,8 @@ _ = require 'lodash'
 GameSettings = React.createClass
 
   getInitialState: ->
-    name: 'Game name'
+    duration: 0.5
+    density: 0.5
     bonus:
       mine: 0.5
       tracker: 0.5
@@ -28,12 +29,20 @@ GameSettings = React.createClass
       type={'bonus' + name.charAt(0).toUpperCase() + name.slice(1)}
       quantity={quantity}
       spriteManager={@spriteManager}
-      onChangeQuantity={_.partial @changeQuantity, name}/> for name, quantity of @state.bonus)
+      onChangeQuantity={_.partial @changeBonusQuantity, name}/> for name, quantity of @state.bonus)
 
     <div className='game-settings'>
 
       <div className='world'>
-        <WorldSettings />
+
+        <DurationSettings
+          value={@state.density}
+          onChange={@changeDuration} />
+
+        <DurationSettings
+          value={@state.density}
+          onChange={@changeDensity} />
+
       </div>
 
       <div className='bonuses'>
@@ -42,7 +51,13 @@ GameSettings = React.createClass
 
     </div>
 
-  changeQuantity: (name, quantity) ->
+  changeDuration: (duration) ->
+    @setState {duration: duration}
+
+  changeDensity: (density) ->
+    @setState {density: density}
+
+  changeBonusQuantity: (name, quantity) ->
     newState = _.cloneDeep @state
     newState.bonus[name] = quantity
     @setState newState

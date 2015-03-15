@@ -1,25 +1,28 @@
 
 .game-settings {
+  width: 80%;
+  margin: auto;
+
+  .world {
+
+    .range {
+      float: left;
+      margin: 1em;
+    }
+  }
 
   .bonuses {
-      width: 80%;
-      margin: auto;
+    clear: left;
 
-    .bonus-settings {
+    .gauge {
       float: left;
+      position: relative;
+      margin: 1em;
 
-      div {
-        position: relative;
-
-        canvas {
-          position: absolute;
-          top: 75px;
-          left: 75px;
-        }
-
-        svg {
-
-        }
+      canvas {
+        position: absolute;
+        top: 75px;
+        left: 75px;
       }
     }
   }
