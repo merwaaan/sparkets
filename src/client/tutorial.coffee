@@ -14,7 +14,7 @@ class Tutorial
 
     @load()
 
-    setTimeout((() => @start()), @startDelay)
+    setTimeout (() => @start()), @startDelay
 
   load: () ->
     for i, s of @slides

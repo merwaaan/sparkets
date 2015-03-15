@@ -10,30 +10,30 @@ class Grenade
 
     @color = @client.gameObjects[@ownerId].color
 
-    # Create the sprite.
+    # Create the sprite
     r = @client.serverPrefs.grenade.radius
     color = utils.color @color
-    @sprite = @client.spriteManager.get('grenade', r, r, color)
+    @sprite = @client.spriteManager.get 'grenade', r, r, color
 
   serverUpdate: (grenade) ->
-    utils.deepMerge(grenade, @)
+    utils.deepMerge grenade, @
 
   update: () ->
     @clientDelete = @serverDelete
 
-  draw: (ctxt) ->
+  draw: (ctx) ->
     return if @state is 'exploding' or @state is 'dead'
 
-    ctxt.save()
-    ctxt.translate(@pos.x, @pos.y)
-    ctxt.drawImage(@sprite, -@sprite.width/2, -@sprite.height/2)
-    ctxt.restore()
+    ctx.save()
+    ctx.translate @pos.x, @pos.y
+    ctx.drawImage @sprite, -@sprite.width/2, -@sprite.height/2
+    ctx.restore()
 
   inView: (offset = {x:0, y:0}) ->
-    @client.boxInView(@pos.x + offset.x, @pos.y + offset.y, @radius)
+    @client.boxInView @pos.x + offset.x, @pos.y + offset.y, @radius
 
   explosionEffect: () ->
-    @client.effects.push new FlashEffect(@client, @pos, 20, @color, 500)
+    @client.effects.push new FlashEffect @client, @pos, 20, @color, 500
 
 
 module.exports = Grenade

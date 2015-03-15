@@ -1,4 +1,5 @@
 class DislocateEffect
+
   constructor: (@client, @edges, @color, @duration) ->
     @start = @client.now
     @end = @start + @duration
@@ -15,19 +16,20 @@ class DislocateEffect
   inView: (offset = {x:0, y:0}) ->
     true
 
-  draw: (ctxt) ->
-    ctxt.strokeStyle = utils.color(@color, 1-(@client.now-@start)/@duration)
-    for e in @edges
-      ctxt.lineWidth = e.lineWidth or 2
-      ctxt.save()
-      ctxt.translate(e.x, e.y)
-      ctxt.rotate(e.r)
-      ctxt.beginPath()
-      ctxt.moveTo(-e.size/2, 0)
-      ctxt.lineTo(e.size/2, 0)
-      ctxt.stroke()
-      ctxt.restore()
+  draw: (ctx) ->
 
-    true
+    ctx.strokeStyle = utils.color @color, 1-(@client.now-@start)/@duration
+
+    for e in @edges
+      ctx.lineWidth = e.lineWidth or 2
+      ctx.save()
+      ctx.translate e.x, e.y
+      ctx.rotate e.r
+      ctx.beginPath()
+      ctx.moveTo -e.size/2, 0
+      ctx.lineTo e.size/2, 0
+      ctx.stroke()
+      ctx.restore()
+
 
 module.exports = DislocateEffect

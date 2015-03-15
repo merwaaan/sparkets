@@ -8,35 +8,37 @@ class EMP
     @serverUpdate(emp)
 
   serverUpdate: (emp) ->
-    utils.deepMerge(emp, @)
+    utils.deepMerge emp, @
 
   update: () ->
     @clientDelete = @serverDelete
 
-  draw: (ctxt) ->
+  draw: (ctx) ->
     return if not @waves?
 
-    ctxt.save()
-    ctxt.translate(@pos.x, @pos.y)
-    ctxt.rotate(Math.random() * Math.PI)
+    ctx.save()
+    ctx.translate @pos.x, @pos.y
+    ctx.rotate Math.random() * Math.PI
 
     for i in [0...@waves.length]
 
-      ctxt.fillStyle = utils.color(@color, 0.1 + Math.random() * 0.1)
+      ctx.fillStyle = utils.color @color, 0.1 + Math.random() * 0.1
 
-      ctxt.beginPath()
+      ctx.beginPath()
+
       for j in [0...@waves[i].length]
         p = @waves[i][j]
         x = Math.cos(p.angle) * (@radius + p.offset)
         y = Math.sin(p.angle) * (@radius + p.offset)
-        ctxt.lineTo(x, y)
-      ctxt.closePath()
-      ctxt.fill()
+        ctx.lineTo x, y
 
-    ctxt.restore()
+      ctx.closePath()
+      ctx.fill()
+
+    ctx.restore()
 
   inView: (offset = {x:0, y:0}) ->
-    @client.boxInView(@pos.x + offset.x, @pos.y + offset.y, @radius)
+    @client.boxInView @pos.x + offset.x, @pos.y + offset.y, @radius
 
   chargingEffect: () ->
     @client.effects.push new ChargingEffect(
@@ -56,5 +58,6 @@ class EMP
         @waves[i].push
           angle: a
           offset: Math.random() * 10 - 5
+
 
 module.exports = EMP

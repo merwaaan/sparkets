@@ -64,6 +64,7 @@ Chat = React.createClass
 
   componentWillUnmount: ->
 
+
     @props.client.socket.removeListener 'player says', @onPlayerSays
 
   open: () ->

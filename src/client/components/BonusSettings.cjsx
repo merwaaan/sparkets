@@ -92,8 +92,6 @@ BonusSettings = React.createClass
           {@cursor @state.quantity}
         </svg>
 
-        {@state.quantity}
-
       </div>
 
     </div>

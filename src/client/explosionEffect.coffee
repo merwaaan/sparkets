@@ -1,17 +1,19 @@
 class ExplosionEffect
+
   constructor: (@client, @pos, color, @density = 100, @bitSize = 10, @speed = 1) ->
     @init()
 
-    # Copy color array since we will modify it.
+    # Copy color array since we will modify it
     @color = color.slice(0)
 
   init: () ->
+
     @bits = []
     @frame = 0
     @maxExploFrame = 0
 
     # Ensure decent fireworks.
-    @speed = Math.max(@speed, 3)
+    @speed = Math.max @speed, 3
 
     # Create explosion particles.
     for i in [0..@density]
@@ -23,7 +25,7 @@ class ExplosionEffect
         size: Math.random() * @bitSize
 
       # Circular repartition.
-      angle = Math.atan2(particle.vy, particle.vx)
+      angle = Math.atan2 particle.vy, particle.vx
       particle.vx *= Math.abs(Math.cos angle)
       particle.vy *= Math.abs(Math.sin angle)
 
@@ -35,7 +37,7 @@ class ExplosionEffect
       else
         particle.life = 50 + 2 * particle.size
       particle.lifeMax = particle.life
-      @maxExploFrame = Math.max(@maxExploFrame, particle.lifeMax)
+      @maxExploFrame = Math.max @maxExploFrame, particle.lifeMax
 
       @bits.push particle
 
@@ -55,16 +57,18 @@ class ExplosionEffect
     @frame > @maxExploFrame
 
   inView: (offset = {x:0, y:0}) ->
+    # TODO?
     true
 
   draw: (ctxt, offset = {x:0, y:0}) ->
-    ctxt.fillStyle = utils.color(@color, (@maxExploFrame-@frame)/@maxExploFrame)
-    for b in @bits
-      if @client.inView(b.x + offset.x, b.y + offset.y)
-        if b.life > 0
-          ctxt.fillStyle = utils.color(@color, b.life / (1.5 * b.lifeMax))
-          ctxt.fillRect(b.x, b.y, b.size, b.size)
 
-    true
+    ctxt.fillStyle = utils.color @color, (@maxExploFrame-@frame)/@maxExploFrame
+
+    for b in @bits
+      if @client.inView b.x + offset.x, b.y + offset.y
+        if b.life > 0
+          ctxt.fillStyle = utils.color @color, b.life / (1.5 * b.lifeMax)
+          ctxt.fillRect b.x, b.y, b.size, b.size
+
 
 module.exports = ExplosionEffect

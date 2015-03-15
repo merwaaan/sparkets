@@ -1,5 +1,7 @@
 class BoostEffect
+
   constructor: (@client, @object, @length = 3, @duration = 1000) ->
+
     @shadows = []
 
     @sprite = @object.sprite
@@ -9,7 +11,7 @@ class BoostEffect
 
   update: () ->
 
-    # Progressively insert new shadows.
+    # Add new shadows
     if @shadows.length < @length
       @shadows.push
         x: 0
@@ -17,11 +19,13 @@ class BoostEffect
         dir: 0
         alpha: (1 - @shadows.length / @length) * 0.6
 
-    # Update shadows.
+    # Update existing shadows
+
     for i in [@shadows.length-1...0]
       @shadows[i].x = @shadows[i-1].x
       @shadows[i].y = @shadows[i-1].y
       @shadows[i].dir = @shadows[i-1].dir
+
     @shadows[0].x = @object.pos.x
     @shadows[0].y = @object.pos.y
     @shadows[0].dir = @object.dir
@@ -33,6 +37,7 @@ class BoostEffect
     not @running or @object.state is 'dead'
 
   inView: (offset = {x:0, y:0}) ->
+    # TODO
     true
 
   draw: (ctxt) ->
@@ -40,9 +45,9 @@ class BoostEffect
       s = @shadows[i]
       ctxt.save()
       ctxt.globalAlpha = s.alpha
-      ctxt.translate(s.x, s.y)
+      ctxt.translate s.x, s.y
       ctxt.rotate(s.dir)
-      ctxt.drawImage(@sprite, -@sprite.width/2, -@sprite.height/2)
+      ctxt.drawImage @sprite, -@sprite.width/2, -@sprite.height/2
       ctxt.restore()
 
 

@@ -1,40 +1,41 @@
 mixin = () ->
 
-  @drawHitbox = (ctxt) ->
+  @drawHitbox = (ctx) ->
 
     return if not @hitBox?
 
-    ctxt.strokeStyle = 'red'
-    ctxt.lineWidth = 2
+    ctx.strokeStyle = 'red'
+    ctx.lineWidth = 2
 
     switch @hitBox.type
 
       when 'circle'
 
-        utils.strokeCircle(ctxt, @hitBox.x, @hitBox.y, @hitBox.radius)
+        utils.strokeCircle ctx, @hitBox.x, @hitBox.y, @hitBox.radius
 
       when 'segments', 'polygon'
 
-        ctxt.beginPath()
+        ctx.beginPath()
+        ctx.moveTo @hitBox.points[0].x, @hitBox.points[0].y
 
-        ctxt.moveTo(@hitBox.points[0].x, @hitBox.points[0].y)
         for i in [1...@hitBox.points.length]
-          ctxt.lineTo(@hitBox.points[i].x, @hitBox.points[i].y)
+          ctx.lineTo @hitBox.points[i].x, @hitBox.points[i].y
 
-        ctxt.closePath() if @hitBox.type is 'polygon'
+        ctx.closePath() if @hitBox.type is 'polygon'
+        ctx.stroke()
 
-        ctxt.stroke()
-
-  @drawBoundingBox = (ctxt) ->
+  @drawBoundingBox = (ctx) ->
 
     return if not @boundingBox?
 
-    ctxt.strokeStyle = 'blue'
-    ctxt.lineWidth = 2.5
+    ctx.strokeStyle = 'blue'
+    ctx.lineWidth = 2.5
 
     r = @boundingBox.radius
-    ctxt.strokeRect(@boundingBox.x - r, @boundingBox.y - r, 2*r, 2*r)
+    d = 2*r
+    ctx.strokeRect @boundingBox.x - r, @boundingBox.y - r, d, d
 
   return @
+
 
 module.exports = mixin

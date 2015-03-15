@@ -3,18 +3,18 @@ DislocateEffect = require './dislocateEffect'
 
 class Rope
 
-  boxedMixin.call(@prototype)
+  boxedMixin.call @prototype
 
   constructor: (@client, rope) ->
-    @serverUpdate(rope)
+    @serverUpdate rope
 
   serverUpdate: (rope) ->
-    utils.deepMerge(rope, @)
+    utils.deepMerge rope, @
 
   update: () ->
     @clientDelete = @serverDelete
 
-  draw: (ctxt) ->
+  draw: (ctx) ->
     # Draw a bezier curve passing through a set of points.
     # Partly borrowed from : http://www.efg2.com/Lab/Graphics/Jean-YvesQueinecBezierCurves.htm
 
@@ -25,7 +25,7 @@ class Rope
     holder = @client.ships[@holderId]
     if holder.invisible
       if holder is @client.localShip
-        ctxt.globalAlpha = 0.5
+        ctx.globalAlpha = 0.5
       else
         return
 
@@ -34,11 +34,11 @@ class Rope
       @clientChain[i] = @client.closestGhost(@clientChain[0], @clientChain[i])
 
     smooth = 0.75
-    ctxt.strokeStyle = utils.color @color
-    ctxt.lineWidth = 2
-    ctxt.globalCompositeOperation = 'destination-over'
-    ctxt.beginPath()
-    ctxt.moveTo(@clientChain[0].x, @clientChain[0].y)
+    ctx.strokeStyle = utils.color @color
+    ctx.lineWidth = 2
+    ctx.globalCompositeOperation = 'destination-over'
+    ctx.beginPath()
+    ctx.moveTo(@clientChain[0].x, @clientChain[0].y)
 
     for i in [0...@clientChain.length-1]
       prev = @clientChain[i-1] # Position of previous node.
@@ -85,9 +85,9 @@ class Rope
         x: snnext.x + (middle.x - snnext.x) / 2
         y: snnext.y + (middle.y - snnext.y) / 2
 
-      ctxt.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, next.x, next.y)
+      ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, next.x, next.y)
 
-    ctxt.stroke()
+    ctx.stroke()
 
   inView: (offset = {x:0, y:0}) ->
     true

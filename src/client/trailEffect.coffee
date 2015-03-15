@@ -6,13 +6,10 @@ class TrailEffect
   update: () ->
 
     # Delete expired particles
-    particles = []
-    for p in @particles
-      if p.life > 0
-        particles.push p
-    @particles = particles
+    @particles = @particles.filter (particle) ->
+      particle.life > 0
 
-    # Update existing particles.
+    # Update existing particles
     for p in @particles
       p.x += p.vx
       p.y += p.vy
@@ -20,7 +17,8 @@ class TrailEffect
       p.vy *= 0.9
       --p.life
 
-    # Add a new particle.
+    # Add a new particle
+    # TODO why only one? add a parameter for this
     if @object.state isnt 'dead'
       ejectionDir = (@object.dir + Math.PI) + (Math.random() * 2 * @dispersion - @dispersion)
       @particles.push
@@ -34,18 +32,18 @@ class TrailEffect
     @object.state is 'dead' and @particles.length is 0
 
   inView: (offset = {x:0, y:0}) ->
+    # TODO?
     true
 
   draw: (ctxt, offset = {x:0, y:0}) ->
-    for p in @particles
-      ctxt.fillStyle = utils.color(@object.color, p.life/@life)
-      ctxt.save()
-      ctxt.translate(p.x, p.y)
-      ctxt.scale(@size, @size)
-      ctxt.fillRect(-0.5, -0.5, 1, 1)
-      ctxt.restore()
 
-    true
+    for p in @particles
+      ctxt.fillStyle = utils.color @object.color, p.life/@life
+      ctxt.save()
+      ctxt.translate p.x, p.y
+      ctxt.scale @size, @size
+      ctxt.fillRect -0.5, -0.5, 1, 1
+      ctxt.restore()
 
 
 module.exports = TrailEffect
